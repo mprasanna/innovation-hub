@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Chief of Staff — Admin Console</title>
+<style>
+/* ============================================================
+   CALM INTELLIGENCE — design system for an AI Chief of Staff
+   Premium · Executive · Minimal · High-signal · Trustworthy
+   Bloomberg Terminal × Apple · Linear × Perplexity
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;450;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
+
+:root {
+  /* — Type — */
+  --sans: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* — Signal palette (calm, earthy — never neon) — */
+  --teal:        #0F7682;   /* intelligence / AI / primary action */
+  --teal-deep:   #0A5A64;
+  --teal-soft:   #E2F0F0;
+  --clay:        #B24A38;   /* critical / risk */
+  --clay-soft:   #F6E6E1;
+  --ochre:       #A8782A;   /* caution / at-risk / pending */
+  --ochre-soft:  #F5ECD9;
+  --sage:        #4E7C5C;   /* on-track / approved / positive */
+  --sage-soft:   #E4EEE6;
+  --iris:        #4B4F86;   /* decisions / scheduling */
+  --iris-soft:   #E9E9F2;
+
+  /* — Light (paper) surface — */
+  --paper:       #F4F2EC;   /* warm editorial paper */
+  --surface:     #FFFFFF;
+  --surface-2:   #FAF8F3;
+  --surface-3:   #EFEBE2;
+  --ink:         #1B1C1F;
+  --ink-2:       #5C5E66;
+  --ink-3:       #93949C;
+  --hairline:    rgba(27,28,31,0.085);
+  --hairline-2:  rgba(27,28,31,0.05);
+
+  /* — Dark (cockpit) surface — */
+  --d-bg:        #0C0E11;
+  --d-surface:   #15181D;
+  --d-surface-2: #1B1F26;
+  --d-surface-3: #232831;
+  --d-ink:       #F1F2F4;
+  --d-ink-2:     #9DA2AC;
+  --d-ink-3:     #686D77;
+  --d-hairline:  rgba(255,255,255,0.08);
+  --d-teal:      #3FB6C2;
+  --d-clay:      #E0775F;
+  --d-ochre:     #DBA94A;
+  --d-sage:      #6FB389;
+
+  /* — Geometry — */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+  --shadow-card: 0 1px 2px rgba(27,28,31,0.04), 0 6px 18px rgba(27,28,31,0.05);
+  --shadow-lift: 0 2px 8px rgba(27,28,31,0.06), 0 18px 40px rgba(27,28,31,0.10);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* tabular figures for all data */
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+
+/* hide scrollbars inside phones for clean capture */
+.noscroll::-webkit-scrollbar { width: 0; height: 0; }
+.noscroll { scrollbar-width: none; }
+
+/* subtle entrance */
+@keyframes riseIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(15,118,130,0.30); }
+  70% { box-shadow: 0 0 0 14px rgba(15,118,130,0); }
+  100% { box-shadow: 0 0 0 0 rgba(15,118,130,0); }
+}
+@keyframes breathe { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes slideUp { from { transform: translateY(101%); } to { transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { 0% { transform: scale(0.78); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+
+html,body{background:var(--paper);}
+#root{min-height:100vh;}
+.cs-goto:hover{background:var(--surface-3)!important;color:var(--ink)!important;}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script>/* Emma Rodriguez — COO, global technology company (5,000 employees)
+   One realistic morning. Shared across all three concepts. */
+window.EMMA = {
+  user: { name: 'Emma', full: 'Emma Rodriguez', role: 'Chief Operating Officer', org: 'Northpoint', initials: 'ER' },
+  now: '8:17',
+  date: 'Monday, June 1',
+
+  // headline counts
+  summary: {
+    decisions: 3,
+    atRisk: 2,
+    approvals: 12,
+    firstMeetingMins: 43,
+    escalations: 1,
+    checkins: { responded: 6, total: 8 },
+  },
+
+  // the one-line brief the AI leads with
+  lede: [
+    { t: 'Three decisions need you before noon.', tone: 'decision' },
+    { t: 'Two projects slipped overnight — Atlas and Mobile Relaunch.', tone: 'critical' },
+    { t: 'Northwind (Toronto) is escalating. They’re on your 11:00.', tone: 'critical' },
+    { t: '11 of 12 approvals are within policy. One exceeds your $100K limit.', tone: 'caution' },
+  ],
+
+  schedule: [
+    { id:'m1', time:'9:30',  end:'10:00', dur:'30m', title:'Exec Staff Sync', kind:'Internal', where:'Boardroom A', critical:false, attendees:7, note:null },
+    { id:'m2', time:'11:00', end:'11:30', dur:'30m', title:'Northwind QBR', kind:'Customer', where:'Zoom', critical:true, attendees:5,
+      note:'Likely to overrun by 30 min. Account is escalating — churn risk flagged.', flag:'escalation', overrun:true },
+    { id:'m3', time:'12:30', end:'13:00', dur:'30m', title:'1:1 — Marcus Lee', kind:'Team', where:'Office', critical:false, attendees:2,
+      note:'Project Atlas is blocked. Worth raising today.' },
+    { id:'m4', time:'14:30', end:'16:00', dur:'90m', title:'Q3 Board Prep', kind:'Board', where:'Boardroom A', critical:true, attendees:6,
+      note:'Needs the revised operating plan. Draft is 80% ready.' },
+    { id:'m5', time:'16:30', end:'17:00', dur:'30m', title:'Hiring Panel — Sr. PM, Platform', kind:'Hiring', where:'Zoom', critical:true, attendees:4,
+      note:'Requisition awaiting your decision before panel.' },
+  ],
+
+  approvals: [
+    { id:'a1', vendor:'Datadog', purpose:'Annual observability renewal', amount:48000, cat:'Software', requester:'Priya N.', policy:'within', rec:'Approve', reason:'Within $50K software policy. Renewal, no scope change.' },
+    { id:'a2', vendor:'Contractor — A. Boyd', purpose:'Platform contract extension, 3 mo', amount:12500, cat:'Contract', requester:'Marcus L.', policy:'within', rec:'Approve', reason:'Within policy. Backfill for open req.' },
+    { id:'a3', vendor:'Snowflake', purpose:'Net-new data warehouse expansion', amount:128000, cat:'Vendor', requester:'Devon R.', policy:'exception', rec:'Review', reason:'Exceeds your $100K threshold and requester’s authority. Needs your sign-off.' },
+    { id:'a4', vendor:'Offsite catering', purpose:'Q3 leadership offsite', amount:5000, cat:'Expense', requester:'Office Ops', policy:'within', rec:'Approve', reason:'Within policy and budget line.' },
+    { id:'a5', vendor:'Travel — L. Park', purpose:'Client visit reimbursement', amount:3200, cat:'Expense', requester:'L. Park', policy:'flag', rec:'Clarify', reason:'Possible duplicate of an April claim. Missing receipt.' },
+    { id:'a6', vendor:'Hiring requisition', purpose:'Senior PM, Platform — backfill', amount:0, cat:'Hiring', requester:'Marcus L.', policy:'decision', rec:'Decide', reason:'Open since 47 days. Panel is at 16:30 today.' },
+  ],
+
+  team: [
+    { id:'t1', name:'Sarah Chen', role:'Mobile Lead', project:'Mobile Relaunch', status:'at-risk', responded:true,
+      signal:'Plan doesn’t align with assigned priorities', detail:'Sarah’s stated focus is the design refresh; the relaunch ship-blocker (auth) is unassigned.' },
+    { id:'t2', name:'Marcus Lee', role:'Platform Eng', project:'Project Atlas', status:'at-risk', responded:true,
+      signal:'Blocked 2 days — data migration dependency', detail:'Atlas migration is waiting on the warehouse expansion (see Snowflake approval).' },
+    { id:'t3', name:'Devon Rao', role:'Data', project:'Warehouse', status:'on-track', responded:true, signal:'On plan', detail:'Pending your Snowflake decision to proceed.' },
+    { id:'t4', name:'Priya Nair', role:'Infra', project:'Reliability', status:'on-track', responded:true, signal:'On plan', detail:'SLO at 99.97% this week.' },
+    { id:'t5', name:'Liam Park', role:'GTM', project:'Northwind', status:'watch', responded:true, signal:'Owns the 11:00 escalation', detail:'Prepared the QBR recovery plan.' },
+    { id:'t6', name:'Ana Costa', role:'Design', project:'Mobile Relaunch', status:'on-track', responded:true, signal:'On plan', detail:'' },
+    { id:'t7', name:'Tom Reyes', role:'QA', project:'Mobile Relaunch', status:'pending', responded:false, signal:'No check-in — 2 days', detail:'Second missed check-in. Escalation threshold reached.' },
+    { id:'t8', name:'Nadia Haq', role:'Ops', project:'Atlas', status:'pending', responded:false, signal:'No check-in today', detail:'' },
+  ],
+
+  travel: {
+    city:'London', country:'United Kingdom', inDays:9, dates:'Jun 10 – Jun 13', purpose:'Northwind exec review + EMEA town hall',
+    items:[
+      { label:'Visa', status:'ok', detail:'Valid until 2027' },
+      { label:'Flights', status:'pending', detail:'Held, not ticketed', owner:'David — Travel Desk' },
+      { label:'Hotel', status:'pending', detail:'Awaiting confirmation', owner:'David — Travel Desk' },
+    ],
+    sla:'Flights unticketed for 4 days — past the 48h SLA.',
+  },
+
+  // yesterday's meeting, ready to turn into actions
+  minutes: {
+    title:'Platform Architecture Review', date:'Fri, May 29', dur:'52 min', attendees:6,
+    summary:'The team aligned on consolidating to a single data warehouse and pausing the dual-write migration until the Snowflake expansion is approved. Auth remains the relaunch blocker and is currently unowned.',
+    decisions:[
+      'Consolidate to a single warehouse; retire the legacy store by Q4.',
+      'Pause dual-write migration until expansion is funded.',
+    ],
+    actions:[
+      { id:'ac1', text:'File the Snowflake expansion for COO approval', owner:'Devon Rao', due:'Today', system:'Odoo', priority:'high', confirmed:true },
+      { id:'ac2', text:'Assign an owner to the auth ship-blocker', owner:'Sarah Chen', due:'Jun 2', system:'monday.com', priority:'high', confirmed:false },
+      { id:'ac3', text:'Draft legacy-store retirement plan', owner:'Marcus Lee', due:'Jun 6', system:'monday.com', priority:'med', confirmed:true },
+      { id:'ac4', text:'Schedule warehouse cutover dry-run', owner:'Priya Nair', due:'Jun 9', system:'monday.com', priority:'med', confirmed:false },
+    ],
+  },
+
+  // an inbound invite for the calendar-intelligence flow
+  invite: {
+    from:'Northwind — Karen Voss', title:'Add: Escalation working session', when:'Today, 11:30 – 12:30', conflictsWith:'Northwind QBR (overruns)', 
+    rec:'Reschedule', reason:'Back-to-back with the QBR that will likely overrun. Suggest 13:30, after your 1:1.',
+    alts:['13:30 – 14:00 today','Tomorrow 9:30','Tomorrow 15:00'],
+  },
+};
+
+/* ── Detail-level intelligence for the decision flows ── */
+window.EMMA.approvalDetail = {
+  a3: { // Snowflake — the exception
+    risk:[
+      { t:'Exceeds your $100K approval limit by $28,000', sev:'high' },
+      { t:'Requester (Devon R.) is two levels below signing authority', sev:'high' },
+      { t:'No competing quote attached', sev:'med' },
+    ],
+    impact:'Unblocks Project Atlas (currently blocked 2 days). Marcus’ migration cannot resume without it.',
+    budget:{ line:'Data Platform — FY Capex', used:62, of:'$210K remaining' },
+    doc:'snowflake_expansion_SOW.pdf',
+    history:'First request from this vendor this quarter. No prior exceptions on Devon’s record.',
+    similar:'You approved a $96K Databricks expansion in March — within limit.',
+  },
+  a6: { // hiring requisition
+    risk:[
+      { t:'Open 47 days — above your 30-day target', sev:'med' },
+      { t:'Backfill is the named owner of a stalled ship-blocker', sev:'high' },
+    ],
+    impact:'Panel is at 16:30 today and cannot proceed without your go-ahead. Marcus’ team is at 60% capacity.',
+    budget:{ line:'Platform Headcount — approved plan', used:80, of:'1 of 2 reqs open' },
+    doc:'req_SrPM_Platform.pdf',
+    history:'Role approved in the annual plan. Comp band within range.',
+    similar:'',
+  },
+  a1: { risk:[{ t:'Renewal, no scope change', sev:'low' }], impact:'Maintains observability across all production services.', budget:{ line:'Software — Eng', used:48, of:'$310K remaining' }, doc:'datadog_renewal_2026.pdf', history:'Renewed at the same rate last year.', similar:'' },
+  a5: { risk:[{ t:'Possible duplicate of an April claim ($3,200)', sev:'high' },{ t:'Receipt missing', sev:'med' }], impact:'Low. Single reimbursement.', budget:{ line:'T&E — GTM', used:71, of:'$40K remaining' }, doc:null, history:'L. Park filed a similar amount on Apr 14.', similar:'' },
+};
+
+window.EMMA.teamDetail = {
+  t1: { // Sarah — the differentiated insight
+    launchRisk:72, trend:'up',
+    stated:'Polishing the design refresh and reviewing Ana’s component library.',
+    assigned:[
+      { task:'Auth ship-blocker (relaunch gate)', status:'unowned', priority:'P0', note:'No one is on the critical path item' },
+      { task:'Design refresh', status:'in-progress', priority:'P2', note:'Sarah’s stated focus' },
+      { task:'Crash-rate burndown', status:'not-started', priority:'P1', note:'Due before ship' },
+    ],
+    insight:'Sarah’s stated plan is P2 work. The P0 ship-blocker (auth) is unowned, and the P1 crash burndown hasn’t started. Mobile Relaunch ship date is at risk.',
+    suggest:[ 'Reassign auth to Sarah in your 1:1', 'Pull crash burndown forward', 'Flag relaunch date to the steering group' ],
+  },
+  t2: { // Marcus — blocked
+    launchRisk:55, trend:'flat',
+    stated:'Prepping the legacy-store retirement plan; blocked on the migration.',
+    assigned:[
+      { task:'Atlas data migration', status:'blocked', priority:'P0', note:'Waiting on Snowflake expansion approval' },
+      { task:'Legacy-store retirement plan', status:'in-progress', priority:'P1', note:'On track' },
+    ],
+    insight:'Marcus is blocked, not off-plan. Atlas resumes the moment you clear the Snowflake approval — the two items are linked.',
+    suggest:[ 'Approve Snowflake to unblock', 'Confirm new Atlas date after approval' ],
+  },
+};
+
+</script>
+<script>/* Configuration dataset for the web Admin Console (control plane).
+   Mirrors the org behind Emma's mobile cockpit — same Northpoint tenant. */
+window.WEB = {
+  org: {
+    name:'Northpoint', plan:'Enterprise', execs:1, seats:46,
+    timezone:'Asia/Dubai (GST)', workingDays:['Mon','Tue','Wed','Thu','Fri'],
+    hours:'09:00 – 18:00', defaultChannels:['Mobile push','WhatsApp'],
+  },
+
+  region: { country:'United Arab Emirates', currency:'AED', locale:'en-AE' },
+  countries: ['United Arab Emirates','Saudi Arabia','Qatar','Kuwait','Bahrain','Oman','Egypt','United States','United Kingdom','Canada','India','Singapore'],
+  currencies: ['AED','SAR','QAR','KWD','BHD','OMR','EGP','USD','GBP','CAD','INR','SGD'],
+  countryCurrency: { 'United Arab Emirates':'AED','Saudi Arabia':'SAR','Qatar':'QAR','Kuwait':'KWD','Bahrain':'BHD','Oman':'OMR','Egypt':'EGP','United States':'USD','United Kingdom':'GBP','Canada':'CAD','India':'INR','Singapore':'SGD' },
+  localeByCountry: { 'United Arab Emirates':'en-AE','Saudi Arabia':'en-SA','Qatar':'en-QA','Kuwait':'en-KW','Bahrain':'en-BH','Oman':'en-OM','Egypt':'en-EG','United States':'en-US','United Kingdom':'en-GB','Canada':'en-CA','India':'en-IN','Singapore':'en-SG' },
+
+  modules: [
+    { key:'briefing', name:'Morning Briefing', desc:'Daily consolidated briefing delivered to mobile', on:true, core:true },
+    { key:'calendar', name:'Calendar Intelligence', desc:'Conflict checks, reschedule recs, travel & personal buffers', on:true, core:true },
+    { key:'approvals', name:'Approval Intelligence', desc:'ERP approvals, policy checks, recommendations, audit', on:true, core:true },
+    { key:'team', name:'Team Risk & Check-ins', desc:'Daily plan collection, plan-vs-assigned, risk detection', on:true, core:false },
+    { key:'minutes', name:'Meeting Minutes', desc:'Transcript → minutes → action allocation', on:true, core:false },
+    { key:'travel', name:'Travel Coordination', desc:'Visa/ticket tracking, follow-up, SLA escalation', on:true, core:false },
+    { key:'email', name:'Email Triage', desc:'Priority classification, summaries, draft replies', on:false, core:false, note:'Deferred — Phase 3' },
+    { key:'personal', name:'Personal Routine', desc:'Gym, meals, family reminders — separately consented', on:true, core:false, optional:true },
+  ],
+
+  integrations: [
+    { key:'gcal', name:'Google Calendar', cat:'Calendar', status:'connected', scope:'Read / Write', sync:'2 min ago', dir:'read-write' },
+    { key:'gmail', name:'Gmail', cat:'Email', status:'disabled', scope:'Read / Draft', sync:'—', dir:'read-write', note:'Email module off' },
+    { key:'monday', name:'monday.com', cat:'Tasks', status:'connected', scope:'Read / Write', sync:'6 min ago', dir:'read-write' },
+    { key:'odoo', name:'Odoo ERP', cat:'Approvals', status:'connected', scope:'Approvals / Tasks', sync:'1 min ago', dir:'read-write' },
+    { key:'whatsapp', name:'WhatsApp Business', cat:'Messaging', status:'connected', scope:'Send / Receive', sync:'4 min ago', dir:'read-write' },
+    { key:'voice', name:'Voice / Telephony', cat:'Voice', status:'setup', scope:'Calls / Transcribe', sync:'—', dir:'read-write', note:'Phase 2 capability' },
+    { key:'notify', name:'Notification Service', cat:'Delivery', status:'connected', scope:'Push', sync:'live', dir:'write' },
+    { key:'outlook', name:'Outlook Calendar', cat:'Calendar', status:'available', scope:'Read / Write', sync:'—', dir:'read-write' },
+    { key:'slack', name:'Slack', cat:'Messaging', status:'expired', scope:'Send', sync:'token expired', dir:'write' },
+  ],
+
+  policies: [
+    { id:'p1', cat:'Software', threshold:50000, auto:true, requires:'Auto within limit', esc:'Finance' },
+    { id:'p2', cat:'Travel expense', threshold:5000, auto:true, requires:'Auto within limit', esc:'EA / Chief of Staff' },
+    { id:'p3', cat:'Procurement', threshold:25000, auto:false, requires:'Recommend → review', esc:'COO' },
+    { id:'p4', cat:'Vendor (net-new)', threshold:100000, auto:false, requires:'Requires COO sign-off', esc:'COO', highlight:true },
+    { id:'p5', cat:'Payment', threshold:10000, auto:false, requires:'Recommend → review', esc:'Finance' },
+    { id:'p6', cat:'Hiring requisition', threshold:0, auto:false, requires:'Always COO decision', esc:'COO' },
+  ],
+  approvalLimit: 100000,
+
+  users: [
+    { name:'Emma Rodriguez', role:'CXO / Executive', email:'emma@northpoint.co', access:'Owner', checkin:false },
+    { name:'Dana Whit', role:'Chief of Staff', email:'dana@northpoint.co', access:'Admin', checkin:false },
+    { name:'Marcus Lee', role:'Team — Platform', email:'marcus@northpoint.co', access:'Member', checkin:true },
+    { name:'Sarah Chen', role:'Team — Mobile', email:'sarah@northpoint.co', access:'Member', checkin:true },
+    { name:'Devon Rao', role:'Team — Data', email:'devon@northpoint.co', access:'Member', checkin:true },
+    { name:'Priya Nair', role:'Team — Infra', email:'priya@northpoint.co', access:'Member', checkin:true },
+    { name:'Liam Park', role:'Team — GTM', email:'liam@northpoint.co', access:'Member', checkin:true },
+    { name:'Raj Mehta', role:'Finance Approver', email:'raj@northpoint.co', access:'Approver', checkin:false },
+    { name:'IT / Security', role:'Technology Team', email:'it@northpoint.co', access:'Admin', checkin:false },
+  ],
+
+  prefs: {
+    wake:'6:30 AM', gymDays:['Mon','Wed','Fri'], gymWindow:'7:00 – 8:00 AM', gymProtected:true,
+    officeArrival:'10:30 – 11:00 AM', meetingBuffer:15, travelBuffer:45,
+    commMode:'Voice-first, text fallback',
+    personal:{ gym:true, meals:true, family:true, leisure:false },
+    clients:[
+      { name:'Northwind', behavior:'Runs ~20 min late', buffer:'+30 min', priority:'High', owner:'Liam Park' },
+      { name:'A* Atlas Corp', behavior:'On time', buffer:'Standard', priority:'Medium', owner:'Marcus Lee' },
+    ],
+  },
+
+  escalation: [
+    { issue:'Critical approval overdue', sev:'Critical', sla:'2 h', level:'COO + Finance', channel:'Push + WhatsApp' },
+    { issue:'Travel item past SLA', sev:'High', sla:'4 h', level:'EA / Travel desk', channel:'WhatsApp' },
+    { issue:'Missed team check-in ×2', sev:'Medium', sla:'1 day', level:'Manager', channel:'Email' },
+    { issue:'Integration failure', sev:'High', sla:'30 min', level:'IT / Security', channel:'Push + Email' },
+  ],
+
+  notifications: [
+    { urgency:'Critical alert', channels:['Push','WhatsApp','Voice'], on:true },
+    { urgency:'Approval', channels:['Push','WhatsApp'], on:true },
+    { urgency:'Action required', channels:['Push'], on:true },
+    { urgency:'Reminder', channels:['Push'], on:true },
+    { urgency:'Informational', channels:['In-app'], on:false },
+  ],
+  quietHours:'9:30 PM – 6:30 AM',
+
+  audit: [
+    { time:'Today 9:15', actor:'Emma R.', action:'Approved Snowflake expansion ({a})', amt:128000, tag:'Override', detail:'Exceeded approval limit · explicit sign-off · written to Odoo' },
+    { time:'Today 9:00', actor:'AI', action:'Auto-approved Datadog renewal ({a})', amt:48000, tag:'Auto', detail:'Within Software policy' },
+    { time:'Today 8:42', actor:'Emma R.', action:'Rescheduled Northwind working session', tag:'Calendar', detail:'Moved to 13:30 to avoid QBR overrun' },
+    { time:'Today 8:00', actor:'AI', action:'Morning briefing delivered', tag:'Briefing', detail:'3 decisions · 2 risks · mobile' },
+    { time:'Yest 17:20', actor:'Dana W.', action:'Updated Vendor approval threshold → {a}', amt:100000, tag:'Policy', detail:'Config change · applies to all executives' },
+    { time:'Yest 14:05', actor:'AI', action:'Escalated London flights (past SLA)', tag:'Travel', detail:'Notified Travel desk' },
+  ],
+};
+</script>
+<script type="text/babel">/* Shared icon set + primitives — minimal, stroke-based, currentColor.
+   Exported to window for all concept files. */
+
+const Icon = ({ d, size = 20, sw = 1.6, fill = 'none', children, style }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor"
+    strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" style={style}>
+    {d ? <path d={d} /> : children}
+  </svg>
+);
+
+const I = {
+  clock:    (p) => <Icon {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></Icon>,
+  calendar: (p) => <Icon {...p}><rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M3.5 9h17M8 3v3M16 3v3"/></Icon>,
+  check:    (p) => <Icon {...p}><path d="M20 6L9 17l-5-5"/></Icon>,
+  checkCircle: (p) => <Icon {...p}><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 4.5-5"/></Icon>,
+  x:        (p) => <Icon {...p}><path d="M6 6l12 12M18 6L6 18"/></Icon>,
+  chevR:    (p) => <Icon {...p}><path d="M9 6l6 6-6 6"/></Icon>,
+  chevD:    (p) => <Icon {...p}><path d="M6 9l6 6 6-6"/></Icon>,
+  alert:    (p) => <Icon {...p}><path d="M12 3.5L22 19H2L12 3.5z"/><path d="M12 10v4M12 17v.5"/></Icon>,
+  users:    (p) => <Icon {...p}><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 5.5a3 3 0 010 5.4M16.5 14c2.4.4 4 2.3 4 5"/></Icon>,
+  plane:    (p) => <Icon {...p}><path d="M10.5 13L3 15v-2l7.5-3.5L9 4l1.8-.5L15 8l5-1.5a1.6 1.6 0 01.6 3.1L15 12l-1.5 6L12 18l-1.5-5z"/></Icon>,
+  spark:    (p) => <Icon {...p}><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6L12 3z"/></Icon>,
+  mic:      (p) => <Icon {...p}><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0013 0M12 18v3"/></Icon>,
+  arrowUR:  (p) => <Icon {...p}><path d="M7 17L17 7M8 7h9v9"/></Icon>,
+  shield:   (p) => <Icon {...p}><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/></Icon>,
+  flag:     (p) => <Icon {...p}><path d="M5 21V4M5 4h11l-1.5 3.5L16 11H5"/></Icon>,
+  doc:      (p) => <Icon {...p}><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 15.5h6"/></Icon>,
+  bolt:     (p) => <Icon {...p}><path d="M13 3L5 13h6l-1 8 8-10h-6l1-8z"/></Icon>,
+  search:   (p) => <Icon {...p}><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></Icon>,
+  dollar:   (p) => <Icon {...p}><path d="M12 3v18M16 7.5c0-2-1.8-3-4-3s-4 1-4 3 1.8 2.6 4 3 4 1 4 3-1.8 3-4 3-4-1-4-3"/></Icon>,
+  grid:     (p) => <Icon {...p}><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></Icon>,
+  inbox:    (p) => <Icon {...p}><path d="M3.5 13.5L6 5h12l2.5 8.5v5a2 2 0 01-2 2H5.5a2 2 0 01-2-2v-5z"/><path d="M3.5 13.5H9l1 2.5h4l1-2.5h5.5"/></Icon>,
+  route:    (p) => <Icon {...p}><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 013 3v6.5"/></Icon>,
+  pause:    (p) => <Icon {...p}><rect x="7" y="5" width="3.5" height="14" rx="1"/><rect x="13.5" y="5" width="3.5" height="14" rx="1"/></Icon>,
+  pin:      (p) => <Icon {...p}><path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></Icon>,
+  send:     (p) => <Icon {...p}><path d="M4 12l16-8-6 16-3.5-6L4 12z"/></Icon>,
+  edit:     (p) => <Icon {...p}><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></Icon>,
+  gear:     (p) => <Icon {...p}><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5l1.4 2.6 2.9-.6.6 2.9 2.6 1.4-1.6 2.5 1.6 2.5-2.6 1.4-.6 2.9-2.9-.6L12 21.5l-1.4-2.6-2.9.6-.6-2.9L4.5 15l1.6-2.5L4.5 10l2.6-1.4.6-2.9 2.9.6L12 2.5z"/></Icon>,
+  link2:    (p) => <Icon {...p}><path d="M9 15l6-6"/><path d="M11 6.5l1.5-1.5a3.5 3.5 0 015 5L17 11.5"/><path d="M13 17.5L11.5 19a3.5 3.5 0 01-5-5L7 12.5"/></Icon>,
+  bell:     (p) => <Icon {...p}><path d="M6 9a6 6 0 1112 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 004 0"/></Icon>,
+  sliders:  (p) => <Icon {...p}><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2.2"/><circle cx="8" cy="17" r="2.2"/></Icon>,
+  building: (p) => <Icon {...p}><rect x="5" y="3.5" width="14" height="17" rx="1.5"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M10 20.5v-3.5h4v3.5"/></Icon>,
+  lock:     (p) => <Icon {...p}><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></Icon>,
+  power:    (p) => <Icon {...p}><path d="M12 3v9M7.5 6.5a7 7 0 109 0"/></Icon>,
+};
+
+// status → palette key
+const STATUS = {
+  'at-risk':  { c: 'var(--clay)',  s: 'var(--clay-soft)',  label: 'At risk' },
+  'watch':    { c: 'var(--ochre)', s: 'var(--ochre-soft)', label: 'Watch' },
+  'on-track': { c: 'var(--sage)',  s: 'var(--sage-soft)',  label: 'On track' },
+  'pending':  { c: 'var(--ink-3)', s: 'var(--surface-3)',  label: 'No check-in' },
+};
+const POLICY = {
+  within:   { c:'var(--sage)',  label:'Within policy' },
+  exception:{ c:'var(--clay)',  label:'Exception' },
+  flag:     { c:'var(--ochre)', label:'Needs clarity' },
+  decision: { c:'var(--iris)',  label:'Decision' },
+};
+
+function Dot({ color, size = 7, pulse }) {
+  return <span style={{
+    width: size, height: size, borderRadius: 99, background: color,
+    display: 'inline-block', flexShrink: 0,
+    animation: pulse ? 'breathe 2.4s ease-in-out infinite' : 'none',
+  }} />;
+}
+
+function money(n) { return n === 0 ? '—' : '$' + n.toLocaleString('en-US'); }
+
+Object.assign(window, { Icon, I, STATUS, POLICY, Dot, money });
+</script>
+<script type="text/babel">/* WEB KIT — light "control plane" primitives for the Admin Console. */
+
+const L = {
+  paper:'var(--paper)', surface:'var(--surface)', s2:'var(--surface-2)', s3:'var(--surface-3)',
+  ink:'var(--ink)', ink2:'var(--ink-2)', ink3:'var(--ink-3)', line:'var(--hairline)', line2:'var(--hairline-2)',
+  teal:'var(--teal)', clay:'var(--clay)', ochre:'var(--ochre)', sage:'var(--sage)', iris:'var(--iris)',
+  mono:{ fontFamily:'var(--mono)', letterSpacing:0.3 },
+};
+
+const STATUS_MAP = {
+  connected:{ c:'var(--sage)', label:'Connected' },
+  disabled: { c:'var(--ink-3)', label:'Disabled' },
+  expired:  { c:'var(--clay)', label:'Token expired' },
+  failed:   { c:'var(--clay)', label:'Failed' },
+  setup:    { c:'var(--ochre)', label:'Setup required' },
+  available:{ c:'var(--ink-3)', label:'Available' },
+};
+
+function Toggle({ on, onChange, dim }) {
+  return (
+    <button onClick={()=>onChange && onChange(!on)} style={{ width:42, height:25, borderRadius:99, border:'none', cursor:'pointer', padding:2,
+      background: on ? 'var(--teal)' : 'var(--surface-3)', transition:'background .2s', flexShrink:0, opacity:dim?0.5:1, position:'relative' }}>
+      <span style={{ display:'block', width:21, height:21, borderRadius:99, background:'#fff', boxShadow:'0 1px 3px rgba(0,0,0,0.2)', transform: on?'translateX(17px)':'none', transition:'transform .2s' }} />
+    </button>
+  );
+}
+
+function StatusPill({ status }) {
+  const s = STATUS_MAP[status] || STATUS_MAP.available;
+  return (
+    <span style={{ display:'inline-flex', alignItems:'center', gap:7, fontSize:12.5, fontWeight:500, color:s.c }}>
+      <span style={{ width:7, height:7, borderRadius:99, background:s.c, boxShadow: status==='connected'?'0 0 0 3px color-mix(in oklab, var(--sage) 18%, transparent)':'none' }} />
+      {s.label}
+    </span>
+  );
+}
+
+function Tag({ children, color=L.ink2 }) {
+  return <span style={{ ...L.mono, fontSize:10.5, fontWeight:600, letterSpacing:0.4, textTransform:'uppercase', color, background:'color-mix(in oklab, '+color+' 11%, transparent)', padding:'3px 8px', borderRadius:6 }}>{children}</span>;
+}
+
+function Panel({ title, desc, children, action, pad=true }) {
+  return (
+    <div style={{ background:L.surface, border:'1px solid '+L.line, borderRadius:'var(--r-lg)', boxShadow:'var(--shadow-card)', marginBottom:18, overflow:'hidden' }}>
+      {(title || action) &&
+        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:16, padding:'17px 20px', borderBottom: children?'1px solid '+L.line:'none' }}>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ fontSize:15.5, fontWeight:600, letterSpacing:-0.2, color:L.ink }}>{title}</div>
+            {desc && <div style={{ fontSize:13, color:L.ink3, marginTop:3, lineHeight:1.45, maxWidth:560 }}>{desc}</div>}
+          </div>
+          {action}
+        </div>}
+      {children && <div style={{ padding: pad?'6px 20px':'0' }}>{children}</div>}
+    </div>
+  );
+}
+
+// label + control row
+function Field({ label, sub, children, last }) {
+  return (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:20, padding:'14px 0', borderBottom: last?'none':'1px solid '+L.line2 }}>
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ fontSize:14, fontWeight:500, color:L.ink }}>{label}</div>
+        {sub && <div style={{ fontSize:12.5, color:L.ink3, marginTop:2, lineHeight:1.4 }}>{sub}</div>}
+      </div>
+      <div style={{ flexShrink:0, display:'flex', alignItems:'center', gap:10 }}>{children}</div>
+    </div>
+  );
+}
+
+function TextValue({ children, mono }) {
+  return <span style={{ fontSize:13.5, color:L.ink2, fontWeight:500, whiteSpace:'nowrap', ...(mono?L.mono:{}) }}>{children}</span>;
+}
+
+function Pencil({ onClick }) {
+  return <button onClick={onClick} style={{ width:30, height:30, borderRadius:8, border:'1px solid '+L.line, background:L.surface, color:L.ink3, display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer' }}><I.edit size={15} /></button>;
+}
+
+function WBtn({ label, kind='primary', icon, onClick, small }) {
+  const map = {
+    primary:{ background:'var(--ink)', color:'#fff', border:'none' },
+    teal:{ background:'var(--teal)', color:'#fff', border:'none' },
+    ghost:{ background:'var(--surface)', color:'var(--ink-2)', border:'1px solid var(--hairline)' },
+    danger:{ background:'var(--surface)', color:'var(--clay)', border:'1px solid color-mix(in oklab, var(--clay) 38%, transparent)' },
+  }[kind];
+  return (
+    <button onClick={onClick} style={{ display:'inline-flex', alignItems:'center', gap:7, fontFamily:'var(--sans)', fontSize: small?12.5:13.5, fontWeight:600, padding: small?'7px 12px':'9px 15px', borderRadius:10, cursor:'pointer', ...map }}>{icon}{label}</button>
+  );
+}
+
+// segmented chips (e.g. working days)
+function DayChips({ days, all=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], onToggle }) {
+  return (
+    <div style={{ display:'flex', gap:6 }}>
+      {all.map(d=>{ const on=days.includes(d); return (
+        <button key={d} onClick={()=>onToggle && onToggle(d)} style={{ ...L.mono, fontSize:11, fontWeight:600, width:38, padding:'7px 0', borderRadius:8, cursor:'pointer',
+          border:'1px solid '+(on?'transparent':L.line), background:on?'var(--ink)':L.surface, color:on?'#fff':L.ink3 }}>{d.slice(0,1)}</button>
+      );})}
+    </div>
+  );
+}
+
+// ── Region / currency store (shared across sections)
+const RegionStore = (function(){
+  let s = (window.WEB && window.WEB.region) || { country:'United States', currency:'USD', locale:'en-US' };
+  const subs = new Set();
+  return { get:()=>s, set:(p)=>{ s={...s,...p}; subs.forEach(f=>f()); }, sub:(f)=>{ subs.add(f); return ()=>subs.delete(f); } };
+})();
+function useRegion(){
+  const [,f] = React.useState(0);
+  React.useEffect(()=> RegionStore.sub(()=>f(x=>x+1)), []);
+  return RegionStore.get();
+}
+function fmtMoney(n){
+  const r = RegionStore.get();
+  try { return new Intl.NumberFormat(r.locale||'en', { style:'currency', currency:r.currency, currencyDisplay:'code', maximumFractionDigits:0 }).format(n); }
+  catch(e){ return (r.currency||'')+' '+Number(n).toLocaleString(); }
+}
+
+function Select({ value, options, onChange }){
+  return (
+    <div style={{ position:'relative', display:'inline-block' }}>
+      <select value={value} onChange={e=>onChange && onChange(e.target.value)} style={{ appearance:'none', WebkitAppearance:'none', padding:'8px 32px 8px 13px', borderRadius:9, border:'1px solid var(--hairline)', background:'var(--surface)', fontFamily:'var(--sans)', fontSize:13.5, fontWeight:500, color:'var(--ink)', cursor:'pointer', outline:'none', minWidth:120 }}>
+        {options.map(o => <option key={o} value={o}>{o}</option>)}
+      </select>
+      <span style={{ position:'absolute', right:11, top:'50%', transform:'translateY(-50%)', pointerEvents:'none', color:'var(--ink-3)', display:'flex' }}><I.chevD size={15} /></span>
+    </div>
+  );
+}
+
+Object.assign(window, { L, STATUS_MAP, Toggle, StatusPill, Tag, Panel, Field, TextValue, Pencil, WBtn, DayChips, RegionStore, useRegion, fmtMoney, Select });
+</script>
+<script type="text/babel">/* WEB SECTIONS 1 — Organization & Modules · Integrations · Approval Policies */
+
+const touch = () => window.__touch && window.__touch();
+
+// ── Organization & Modules
+function OrganizationSection() {
+  const W = window.WEB;
+  const region = useRegion();
+  const setCountry = (c) => { RegionStore.set({ country:c, currency:(W.countryCurrency[c]||region.currency), locale:(W.localeByCountry[c]||'en') }); touch(); };
+  const setCurrency = (c) => { RegionStore.set({ currency:c }); touch(); };
+  const [days, setDays] = React.useState(W.org.workingDays);
+  const [mods, setMods] = React.useState(W.modules);
+  const toggleDay = (d) => { setDays(s => s.includes(d) ? s.filter(x=>x!==d) : [...s, d]); touch(); };
+  const toggleMod = (k) => { setMods(s => s.map(m => m.key===k ? {...m, on:!m.on} : m)); touch(); };
+
+  return (
+    <div>
+      <SectionHead title="Organization" desc="Tenant-level defaults. Everything here is configurable per organization — nothing is hardcoded." />
+      <Panel title="Profile" desc="Applied across briefing, scheduling and working-hour logic.">
+        <Field label="Organization name"><TextValue>{W.org.name}</TextValue><Pencil /></Field>
+        <Field label="Plan"><Tag color="var(--iris)">{W.org.plan}</Tag><TextValue>{W.org.execs} executive · {W.org.seats} seats</TextValue></Field>
+        <Field label="Timezone"><TextValue mono>{W.org.timezone}</TextValue><Pencil /></Field>
+        <Field label="Working days"><DayChips days={days} onToggle={toggleDay} /></Field>
+        <Field label="Working hours" sub="Team check-ins and non-urgent nudges stay within this window."><TextValue mono>{W.org.hours}</TextValue><Pencil /></Field>
+        <Field label="Default delivery channels" last>
+          <div style={{ display:'flex', gap:6 }}>{W.org.defaultChannels.map(c=><Tag key={c} color="var(--teal)">{c}</Tag>)}</div>
+        </Field>
+      </Panel>
+
+      <Panel title="Region & currency" desc="Localises the console and denominates every approval threshold, limit and amount.">
+        <Field label="Country / region" sub="Sets locale, currency and compliance defaults.">
+          <Select value={region.country} options={W.countries} onChange={setCountry} />
+        </Field>
+        <Field label="Reporting currency" sub="Applied across approvals, policies and the audit log." last>
+          <div style={{ display:'flex', alignItems:'center', gap:11 }}>
+            <Tag color="var(--teal)">{region.currency}</Tag>
+            <Select value={region.currency} options={W.currencies} onChange={setCurrency} />
+          </div>
+        </Field>
+      </Panel>
+
+      <Panel title="Modules" desc="Enable only what this organization needs. Core modules power the executive briefing and can’t be disabled.">
+        {mods.map((m,i)=>(
+          <Field key={m.key} last={i===mods.length-1}
+            label={<span style={{ display:'inline-flex', alignItems:'center', gap:9 }}>{m.name}{m.core && <Tag color="var(--ink-3)">Core</Tag>}{m.optional && <Tag color="var(--ochre)">Consented</Tag>}{m.note && <Tag color="var(--ink-3)">{m.note}</Tag>}</span>}
+            sub={m.desc}>
+            <Toggle on={m.on} dim={m.core} onChange={()=> !m.core && toggleMod(m.key)} />
+          </Field>
+        ))}
+      </Panel>
+    </div>
+  );
+}
+
+// ── Integrations
+function IntegrationsSection() {
+  const W = window.WEB;
+  const connected = W.integrations.filter(i=>i.status==='connected').length;
+  const issues = W.integrations.filter(i=>['expired','failed','setup'].includes(i.status)).length;
+  const actionFor = (s) => s==='connected' ? ['Manage','ghost'] : s==='expired'||s==='failed' ? ['Reconnect','danger'] : s==='setup' ? ['Set up','teal'] : s==='disabled' ? ['Enable','ghost'] : ['Connect','teal'];
+
+  return (
+    <div>
+      <SectionHead title="Integrations" desc="Every integration uses least-privilege scopes and is revocable. Status is monitored continuously." />
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:14, marginBottom:18 }}>
+        {[['Connected', connected, 'var(--sage)'],['Need attention', issues, 'var(--ochre)'],['Data scopes', 'Least-privilege', 'var(--teal)']].map(([k,v,c])=>(
+          <div key={k} style={{ background:L.surface, border:'1px solid '+L.line, borderRadius:'var(--r-md)', padding:'15px 17px', boxShadow:'var(--shadow-card)' }}>
+            <div style={{ fontSize:12.5, color:L.ink3, fontWeight:500 }}>{k}</div>
+            <div className="tnum" style={{ fontSize: typeof v==='number'?28:16, fontWeight:600, color:c, marginTop:6 }}>{v}</div>
+          </div>
+        ))}
+      </div>
+
+      <Panel pad={false}>
+        <div style={{ display:'grid', gridTemplateColumns:'1.6fr 1fr 1.1fr 1fr auto', gap:14, padding:'12px 20px', borderBottom:'1px solid '+L.line, ...L.mono, fontSize:10.5, fontWeight:600, letterSpacing:0.8, textTransform:'uppercase', color:L.ink3 }}>
+          <span>System</span><span>Category</span><span>Scope</span><span>Status</span><span></span>
+        </div>
+        {W.integrations.map((it,i,arr)=>{ const [lbl,kind]=actionFor(it.status); return (
+          <div key={it.key} style={{ display:'grid', gridTemplateColumns:'1.6fr 1fr 1.1fr 1fr auto', gap:14, alignItems:'center', padding:'14px 20px', borderBottom:i===arr.length-1?'none':'1px solid '+L.line2 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:11 }}>
+              <div style={{ width:30, height:30, borderRadius:8, background:L.s2, border:'1px solid '+L.line, display:'flex', alignItems:'center', justifyContent:'center', color:L.ink2, flexShrink:0 }}><I.link2 size={15} /></div>
+              <div><div style={{ fontSize:13.5, fontWeight:500, color:L.ink }}>{it.name}</div>{it.note && <div style={{ fontSize:11, color:L.ink3 }}>{it.note}</div>}</div>
+            </div>
+            <span style={{ fontSize:12.5, color:L.ink3 }}>{it.cat}</span>
+            <span style={{ fontSize:12.5, color:L.ink2, ...L.mono }}>{it.scope}</span>
+            <StatusPill status={it.status} />
+            <WBtn label={lbl} kind={kind} small onClick={touch} />
+          </div>
+        );})}
+      </Panel>
+      <div style={{ display:'flex', gap:9, alignItems:'center', fontSize:12.5, color:L.ink3, padding:'0 4px' }}>
+        <I.shield size={15} /> Failed write-backs are queued, retried, and reported. Access can be revoked per integration at any time.
+      </div>
+    </div>
+  );
+}
+
+// ── Approval Policies (ties directly to mobile Approval Intelligence)
+function PoliciesSection() {
+  const W = window.WEB;
+  const region = useRegion();
+  const [pol, setPol] = React.useState(W.policies);
+  const [limit, setLimit] = React.useState(W.approvalLimit);
+  const toggleAuto = (id) => { setPol(s=>s.map(p=>p.id===id?{...p,auto:!p.auto}:p)); touch(); };
+  const bump = (d) => { setLimit(v=>Math.max(0, v + d)); touch(); };
+
+  return (
+    <div>
+      <SectionHead title="Approval policies" desc="The policy engine behind every approval recommendation on mobile. Auto-approval only fires inside these thresholds." />
+
+      {/* the limit that drove Snowflake */}
+      <div style={{ background:'linear-gradient(180deg, var(--surface), var(--surface-2))', border:'1px solid '+L.line, borderRadius:'var(--r-lg)', boxShadow:'var(--shadow-card)', padding:'20px 22px', marginBottom:18, display:'flex', alignItems:'center', gap:22 }}>
+        <div style={{ width:48, height:48, borderRadius:13, background:'color-mix(in oklab, var(--teal) 14%, transparent)', color:'var(--teal)', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}><I.shield size={24} /></div>
+        <div style={{ flex:1 }}>
+          <div style={{ ...L.mono, fontSize:10.5, fontWeight:600, letterSpacing:1, textTransform:'uppercase', color:L.ink3 }}>Executive approval limit</div>
+          <div style={{ display:'flex', alignItems:'center', gap:14, marginTop:6 }}>
+            <span className="tnum" style={{ fontSize:30, fontWeight:600, letterSpacing:-0.5, color:L.ink, ...L.mono }}>{fmtMoney(limit)}</span>
+            <div style={{ display:'flex', gap:6 }}>
+              <button onClick={()=>bump(-25000)} style={stepBtn}>–</button>
+              <button onClick={()=>bump(25000)} style={stepBtn}>+</button>
+            </div>
+          </div>
+          <div style={{ fontSize:12.5, color:L.ink2, marginTop:8, lineHeight:1.45 }}>Anything above this routes to Emma for explicit sign-off. <b style={{ color:L.ink }}>This rule sent the {fmtMoney(128000)} Snowflake request to her cockpit this morning.</b></div>
+        </div>
+      </div>
+
+      <Panel pad={false}>
+        <div style={{ display:'grid', gridTemplateColumns:'1.3fr 1fr 1.4fr 1.1fr auto', gap:14, padding:'12px 20px', borderBottom:'1px solid '+L.line, ...L.mono, fontSize:10.5, fontWeight:600, letterSpacing:0.8, textTransform:'uppercase', color:L.ink3 }}>
+          <span>Category</span><span>Threshold</span><span>Behaviour</span><span>Escalates to</span><span>Auto</span>
+        </div>
+        {pol.map((p,i,arr)=>(
+          <div key={p.id} style={{ display:'grid', gridTemplateColumns:'1.3fr 1fr 1.4fr 1.1fr auto', gap:14, alignItems:'center', padding:'14px 20px', borderBottom:i===arr.length-1?'none':'1px solid '+L.line2, background:p.highlight?'color-mix(in oklab, var(--teal) 5%, transparent)':'transparent' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:8, fontSize:13.5, fontWeight:500, color:L.ink }}>{p.cat}{p.highlight && <Tag color="var(--teal)">Drove Snowflake</Tag>}</div>
+            <span className="tnum" style={{ fontSize:13, color:L.ink2, ...L.mono }}>{p.threshold>0?'≤ '+fmtMoney(p.threshold):'Any'}</span>
+            <span style={{ fontSize:12.5, color:L.ink2 }}>{p.requires}</span>
+            <span style={{ fontSize:12.5, color:L.ink2 }}>{p.esc}</span>
+            <Toggle on={p.auto} onChange={()=>toggleAuto(p.id)} />
+          </div>
+        ))}
+      </Panel>
+      <div style={{ display:'flex', gap:9, alignItems:'center', fontSize:12.5, color:L.ink3, padding:'0 4px' }}>
+        <I.lock size={15} /> High-value, duplicate, policy-exception, or missing-document requests can never be auto-approved.
+      </div>
+    </div>
+  );
+}
+
+const stepBtn = { width:30, height:30, borderRadius:8, border:'1px solid var(--hairline)', background:'var(--surface)', color:'var(--ink)', fontSize:17, fontWeight:600, cursor:'pointer', lineHeight:1 };
+
+function SectionHead({ title, desc }) {
+  return (
+    <div style={{ marginBottom:20 }}>
+      <h1 style={{ fontFamily:'var(--serif)', fontSize:30, fontWeight:400, letterSpacing:-0.4, color:'var(--ink)', margin:'0 0 6px' }}>{title}</h1>
+      <p style={{ fontSize:14, color:'var(--ink-2)', lineHeight:1.5, margin:0, maxWidth:620 }}>{desc}</p>
+    </div>
+  );
+}
+
+Object.assign(window, { OrganizationSection, IntegrationsSection, PoliciesSection, SectionHead });
+</script>
+<script type="text/babel">/* WEB SECTIONS 2 — Users & Roles · Executive Preferences · Escalations & Notifications · Audit */
+
+const ACCESS_COLOR = { Owner:'var(--iris)', Admin:'var(--teal)', Member:'var(--ink-3)', Approver:'var(--ochre)' };
+
+function UsersSection() {
+  const W = window.WEB;
+  const [users, setUsers] = React.useState(W.users);
+  const toggleCheckin = (email) => { setUsers(s=>s.map(u=>u.email===email?{...u,checkin:!u.checkin}:u)); touch(); };
+  const checkins = users.filter(u=>u.checkin).length;
+
+  return (
+    <div>
+      <SectionHead title="Users & roles" desc="Role-based access across calendar, email, ERP, tasks and approvals. The check-in list defines who the assistant collects daily plans from." />
+      <Panel title="People" desc={`${users.length} people · ${checkins} on the daily check-in list`}
+        action={<WBtn label="Add person" kind="primary" small icon={<I.users size={14} />} onClick={touch} />}>
+      </Panel>
+      <Panel pad={false}>
+        <div style={{ display:'grid', gridTemplateColumns:'1.6fr 1.4fr 1fr auto', gap:14, padding:'12px 20px', borderBottom:'1px solid '+L.line, ...L.mono, fontSize:10.5, fontWeight:600, letterSpacing:0.8, textTransform:'uppercase', color:L.ink3 }}>
+          <span>Person</span><span>Role</span><span>Access</span><span>Daily check-in</span>
+        </div>
+        {users.map((u,i,arr)=>(
+          <div key={u.email} style={{ display:'grid', gridTemplateColumns:'1.6fr 1.4fr 1fr auto', gap:14, alignItems:'center', padding:'13px 20px', borderBottom:i===arr.length-1?'none':'1px solid '+L.line2 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:11 }}>
+              <div style={{ width:32, height:32, borderRadius:99, background:L.s2, border:'1px solid '+L.line, color:L.ink2, fontSize:11, fontWeight:600, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{u.name.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+              <div style={{ minWidth:0 }}><div style={{ fontSize:13.5, fontWeight:500, color:L.ink }}>{u.name}</div><div style={{ fontSize:11.5, color:L.ink3 }}>{u.email}</div></div>
+            </div>
+            <span style={{ fontSize:13, color:L.ink2 }}>{u.role}</span>
+            <span><Tag color={ACCESS_COLOR[u.access]}>{u.access}</Tag></span>
+            <div style={{ justifySelf:'start' }}>{u.access==='Member' ? <Toggle on={u.checkin} onChange={()=>toggleCheckin(u.email)} /> : <span style={{ fontSize:12, color:L.ink3 }}>—</span>}</div>
+          </div>
+        ))}
+      </Panel>
+      <div style={{ display:'flex', gap:9, alignItems:'center', fontSize:12.5, color:L.ink3, padding:'0 4px' }}>
+        <I.lock size={15} /> Users access only the data and actions their role permits. Tenant data is fully isolated.
+      </div>
+    </div>
+  );
+}
+
+function PreferencesSection() {
+  const W = window.WEB, p = W.prefs;
+  const [prot, setProt] = React.useState(p.gymProtected);
+  const [per, setPer] = React.useState(p.personal);
+  const togglePer = (k) => { setPer(s=>({...s,[k]:!s[k]})); touch(); };
+
+  return (
+    <div>
+      <SectionHead title="Executive preferences" desc="Emma’s rhythm. These drive scheduling, briefing timing and personal protection — the reason the calendar respects her gym block and Northwind’s buffer." />
+
+      <Panel title="Daily rhythm">
+        <Field label="Earliest wake-up" sub="Meetings before this are flagged."><TextValue mono>{p.wake}</TextValue><Pencil /></Field>
+        <Field label="Office arrival window"><TextValue mono>{p.officeArrival}</TextValue><Pencil /></Field>
+        <Field label="Default meeting buffer"><TextValue mono>{p.meetingBuffer} min</TextValue><Pencil /></Field>
+        <Field label="Travel buffer" last><TextValue mono>{p.travelBuffer} min</TextValue><Pencil /></Field>
+      </Panel>
+
+      <Panel title="Protected blocks" desc="Held against routine scheduling unless Emma overrides.">
+        <Field label="Gym" sub={`${p.gymDays.join(' · ')} · ${p.gymWindow}`}>
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}><span style={{ fontSize:12.5, color: prot?L.sage:L.ink3, fontWeight:500 }}>{prot?'Protected':'Off'}</span><Toggle on={prot} onChange={(v)=>{setProt(v);touch();}} /></div>
+        </Field>
+        <Field label="Communication mode" last><TextValue>{p.commMode}</TextValue><Pencil /></Field>
+      </Panel>
+
+      <Panel title="Personal modules" desc="Separately consented and independent from work features — Emma can turn these off without affecting the assistant.">
+        <Field label="Gym reminders" sub="Nudge after 3–4 missed days"><Toggle on={per.gym} onChange={()=>togglePer('gym')} /></Field>
+        <Field label="Meal reminders"><Toggle on={per.meals} onChange={()=>togglePer('meals')} /></Field>
+        <Field label="Family & spouse"><Toggle on={per.family} onChange={()=>togglePer('family')} /></Field>
+        <Field label="Leisure suggestions" sub="Movies, outings — lightweight" last><Toggle on={per.leisure} onChange={()=>togglePer('leisure')} /></Field>
+      </Panel>
+
+      <Panel title="Client scheduling rules" desc="Client-specific buffers override standard meeting duration." pad={false}>
+        <div style={{ display:'grid', gridTemplateColumns:'1.2fr 1.4fr 1fr 0.9fr 1.1fr', gap:14, padding:'12px 20px', borderBottom:'1px solid '+L.line, ...L.mono, fontSize:10.5, fontWeight:600, letterSpacing:0.8, textTransform:'uppercase', color:L.ink3 }}>
+          <span>Client</span><span>Behaviour</span><span>Buffer</span><span>Priority</span><span>Owner</span>
+        </div>
+        {p.clients.map((c,i,arr)=>(
+          <div key={c.name} style={{ display:'grid', gridTemplateColumns:'1.2fr 1.4fr 1fr 0.9fr 1.1fr', gap:14, alignItems:'center', padding:'13px 20px', borderBottom:i===arr.length-1?'none':'1px solid '+L.line2, background:c.name==='Northwind'?'color-mix(in oklab, var(--ochre) 6%, transparent)':'transparent' }}>
+            <span style={{ fontSize:13.5, fontWeight:500, color:L.ink }}>{c.name}</span>
+            <span style={{ fontSize:12.5, color:L.ink2 }}>{c.behavior}</span>
+            <span style={{ fontSize:12.5, color: c.buffer.includes('+')?L.ochre:L.ink2, fontWeight:500, ...L.mono }}>{c.buffer}</span>
+            <span><Tag color={c.priority==='High'?'var(--clay)':'var(--ink-3)'}>{c.priority}</Tag></span>
+            <span style={{ fontSize:12.5, color:L.ink2 }}>{c.owner}</span>
+          </div>
+        ))}
+      </Panel>
+    </div>
+  );
+}
+
+function EscalationSection() {
+  const W = window.WEB;
+  const [notif, setNotif] = React.useState(W.notifications);
+  const toggleN = (u) => { setNotif(s=>s.map(n=>n.urgency===u?{...n,on:!n.on}:n)); touch(); };
+  const sevC = { Critical:'var(--clay)', High:'var(--ochre)', Medium:'var(--iris)' };
+
+  return (
+    <div>
+      <SectionHead title="Escalations & notifications" desc="When the assistant acts on its own, and how it reaches Emma. Every channel and threshold is configurable." />
+
+      <Panel title="Escalation matrix" desc="SLA-based escalation when critical items go unaddressed." pad={false}>
+        <div style={{ display:'grid', gridTemplateColumns:'1.6fr 0.9fr 0.7fr 1.2fr 1.2fr', gap:14, padding:'12px 20px', borderBottom:'1px solid '+L.line, ...L.mono, fontSize:10.5, fontWeight:600, letterSpacing:0.8, textTransform:'uppercase', color:L.ink3 }}>
+          <span>Trigger</span><span>Severity</span><span>SLA</span><span>Escalates to</span><span>Channel</span>
+        </div>
+        {W.escalation.map((e,i,arr)=>(
+          <div key={i} style={{ display:'grid', gridTemplateColumns:'1.6fr 0.9fr 0.7fr 1.2fr 1.2fr', gap:14, alignItems:'center', padding:'13px 20px', borderBottom:i===arr.length-1?'none':'1px solid '+L.line2 }}>
+            <span style={{ fontSize:13.5, color:L.ink, fontWeight:500 }}>{e.issue}</span>
+            <span><Tag color={sevC[e.sev]}>{e.sev}</Tag></span>
+            <span style={{ fontSize:12.5, color:L.ink2, ...L.mono }}>{e.sla}</span>
+            <span style={{ fontSize:12.5, color:L.ink2 }}>{e.level}</span>
+            <span style={{ fontSize:12, color:L.ink3 }}>{e.channel}</span>
+          </div>
+        ))}
+      </Panel>
+
+      <Panel title="Notification routing" desc={`Channels by urgency. Quiet hours: ${W.quietHours}.`}>
+        {notif.map((n,i,arr)=>(
+          <Field key={n.urgency} last={i===arr.length-1}
+            label={n.urgency}
+            sub={<span style={{ display:'inline-flex', gap:6, marginTop:4 }}>{n.channels.map(c=><Tag key={c} color="var(--teal)">{c}</Tag>)}</span>}>
+            <Toggle on={n.on} onChange={()=>toggleN(n.urgency)} />
+          </Field>
+        ))}
+      </Panel>
+    </div>
+  );
+}
+
+function AuditSection() {
+  const W = window.WEB;
+  const region = useRegion();
+  const [q, setQ] = React.useState('');
+  const tagC = { Override:'var(--clay)', Auto:'var(--sage)', Policy:'var(--iris)', Calendar:'var(--teal)', Travel:'var(--ochre)', Briefing:'var(--ink-3)' };
+  const atext = (a) => a.amt!=null ? a.action.replace('{a}', fmtMoney(a.amt)) : a.action;
+  const rows = W.audit.filter(a => (atext(a)+a.actor+a.tag).toLowerCase().includes(q.toLowerCase()));
+
+  return (
+    <div>
+      <SectionHead title="Audit log" desc="Every AI recommendation, human decision and system action — timestamped, attributable, and exportable." />
+      <Panel title="Activity" action={<WBtn label="Export" kind="ghost" small icon={<I.arrowUR size={14} />} onClick={touch} />}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, margin:'6px 0 4px', padding:'9px 13px', background:L.s2, border:'1px solid '+L.line, borderRadius:10 }}>
+          <I.search size={16} style={{ color:L.ink3 }} />
+          <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search by action, actor or type…" style={{ flex:1, border:'none', background:'transparent', outline:'none', fontFamily:'var(--sans)', fontSize:13.5, color:L.ink }} />
+        </div>
+      </Panel>
+      <Panel pad={false}>
+        {rows.map((a,i)=>(
+          <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:14, padding:'14px 20px', borderBottom:i===rows.length-1?'none':'1px solid '+L.line2 }}>
+            <span className="tnum" style={{ ...L.mono, fontSize:11.5, color:L.ink3, width:78, flexShrink:0, paddingTop:2 }}>{a.time}</span>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ display:'flex', alignItems:'baseline', gap:9 }}>
+                <span style={{ fontSize:13.5, fontWeight:500, color:L.ink, flex:1, minWidth:0, lineHeight:1.35 }}>{atext(a)}</span>
+                <span style={{ flexShrink:0 }}><Tag color={tagC[a.tag]||'var(--ink-3)'}>{a.tag}</Tag></span>
+              </div>
+              <div style={{ fontSize:12.5, color:L.ink3, marginTop:3, lineHeight:1.4 }}>{a.detail}</div>
+            </div>
+            <span style={{ fontSize:12, color:L.ink2, flexShrink:0, paddingTop:2 }}>{a.actor}</span>
+          </div>
+        ))}
+        {rows.length===0 && <div style={{ padding:'28px', textAlign:'center', color:L.ink3, fontSize:13.5 }}>No matching activity.</div>}
+      </Panel>
+    </div>
+  );
+}
+
+Object.assign(window, { UsersSection, PreferencesSection, EscalationSection, AuditSection });
+</script>
+<script type="text/babel">/* WEB APP — Admin Console shell: sidebar, topbar with save state, router. */
+
+function AdminApp() {
+  const W = window.WEB;
+  const [active, setActive] = React.useState('org');
+  const [save, setSave] = React.useState('saved'); // 'saved' | 'saving'
+  const timer = React.useRef(null);
+
+  React.useEffect(() => {
+    window.__touch = () => {
+      setSave('saving');
+      clearTimeout(timer.current);
+      timer.current = setTimeout(()=>setSave('saved'), 850);
+    };
+  }, []);
+
+  const groups = [
+    ['Setup', [
+      ['org','Organization', <I.building size={17} />],
+      ['integrations','Integrations', <I.link2 size={17} />],
+    ]],
+    ['Intelligence', [
+      ['policies','Approval policies', <I.shield size={17} />],
+      ['prefs','Executive preferences', <I.sliders size={17} />],
+      ['escalation','Escalations & alerts', <I.bell size={17} />],
+    ]],
+    ['Organization', [
+      ['users','Users & roles', <I.users size={17} />],
+      ['audit','Audit log', <I.doc size={17} />],
+    ]],
+  ];
+
+  const screens = {
+    org:<OrganizationSection />, integrations:<IntegrationsSection />, policies:<PoliciesSection />,
+    prefs:<PreferencesSection />, escalation:<EscalationSection />, users:<UsersSection />, audit:<AuditSection />,
+  };
+
+  return (
+    <div style={{ display:'flex', height:'100vh', background:'var(--paper)', color:'var(--ink)', overflow:'hidden' }}>
+      {/* sidebar */}
+      <aside style={{ width:252, flexShrink:0, background:'var(--surface)', borderRight:'1px solid var(--hairline)', display:'flex', flexDirection:'column', padding:'22px 14px' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:11, padding:'0 8px 20px' }}>
+          <div style={{ width:34, height:34, borderRadius:9, background:'var(--ink)', color:'#fff', display:'flex', alignItems:'center', justifyContent:'center' }}><I.spark size={18} /></div>
+          <div style={{ lineHeight:1.2 }}>
+            <div style={{ fontSize:14, fontWeight:600, letterSpacing:-0.2 }}>{W.org.name}</div>
+            <div style={{ fontSize:11.5, color:'var(--ink-3)' }}>Chief of Staff · Console</div>
+          </div>
+        </div>
+
+        <nav style={{ flex:1, overflowY:'auto' }} className="noscroll">
+          {groups.map(([g, items])=>(
+            <div key={g} style={{ marginBottom:18 }}>
+              <div style={{ ...L.mono, fontSize:10, fontWeight:600, letterSpacing:1.2, textTransform:'uppercase', color:'var(--ink-3)', padding:'0 8px 7px' }}>{g}</div>
+              {items.map(([k,label,icon])=>{
+                const on = active===k;
+                return (
+                  <button key={k} onClick={()=>setActive(k)} style={{ display:'flex', alignItems:'center', gap:11, width:'100%', textAlign:'left', padding:'9px 9px', borderRadius:9, border:'none', cursor:'pointer', marginBottom:2,
+                    background: on?'var(--surface-3)':'transparent', color: on?'var(--ink)':'var(--ink-2)', fontFamily:'var(--sans)', fontSize:13.5, fontWeight: on?600:450 }}>
+                    <span style={{ color: on?'var(--teal)':'var(--ink-3)', display:'flex' }}>{icon}</span>{label}
+                  </button>
+                );
+              })}
+            </div>
+          ))}
+        </nav>
+
+                <div style={{ borderTop:"1px solid var(--hairline)", paddingTop:10, marginTop:4 }}>
+          <div style={{ fontFamily:"var(--mono)", fontSize:10, fontWeight:600, letterSpacing:1.2, textTransform:"uppercase", color:"var(--ink-3)", padding:"0 10px 8px" }}>Navigate</div>
+          <a href="/innovation-hub/index.html" className="cs-goto" style={{ display:"flex",alignItems:"center",gap:10,padding:"8px 10px",borderRadius:9,color:"var(--ink-2)",textDecoration:"none",fontFamily:"var(--sans)",fontSize:12.5,fontWeight:450,marginBottom:1 }}><span style={{color:"var(--ink-3)",display:"flex",flexShrink:0}}><I.bolt size={15} /></span><span style={{flex:1}}>Mission Control</span><I.arrowUR size={12} style={{color:"var(--ink-3)",opacity:0.5}} /></a>
+          <a href="/innovation-hub/concepts.html" className="cs-goto" style={{ display:"flex",alignItems:"center",gap:10,padding:"8px 10px",borderRadius:9,color:"var(--ink-2)",textDecoration:"none",fontFamily:"var(--sans)",fontSize:12.5,fontWeight:450,marginBottom:1 }}><span style={{color:"var(--ink-3)",display:"flex",flexShrink:0}}><I.spark size={15} /></span><span style={{flex:1}}>Concept Exploration</span><I.arrowUR size={12} style={{color:"var(--ink-3)",opacity:0.5}} /></a>
+          <a href="/innovation-hub/AI-Chief-of-Staff-Why-How-Tech.html" className="cs-goto" style={{ display:"flex",alignItems:"center",gap:10,padding:"8px 10px",borderRadius:9,color:"var(--ink-2)",textDecoration:"none",fontFamily:"var(--sans)",fontSize:12.5,fontWeight:450,marginBottom:1 }}><span style={{color:"var(--ink-3)",display:"flex",flexShrink:0}}><I.doc size={15} /></span><span style={{flex:1}}>Product Brief</span><I.arrowUR size={12} style={{color:"var(--ink-3)",opacity:0.5}} /></a>
+          <a href="/innovation-hub/AI-Chief-of-Staff-Build-Plan.html" className="cs-goto" style={{ display:"flex",alignItems:"center",gap:10,padding:"8px 10px",borderRadius:9,color:"var(--ink-2)",textDecoration:"none",fontFamily:"var(--sans)",fontSize:12.5,fontWeight:450,marginBottom:1 }}><span style={{color:"var(--ink-3)",display:"flex",flexShrink:0}}><I.gear size={15} /></span><span style={{flex:1}}>Build Plan</span><I.arrowUR size={12} style={{color:"var(--ink-3)",opacity:0.5}} /></a>
+          <a href="/innovation-hub/AI-Chief-of-Staff-Lean-Build.html" className="cs-goto" style={{ display:"flex",alignItems:"center",gap:10,padding:"8px 10px",borderRadius:9,color:"var(--ink-2)",textDecoration:"none",fontFamily:"var(--sans)",fontSize:12.5,fontWeight:450,marginBottom:1 }}><span style={{color:"var(--ink-3)",display:"flex",flexShrink:0}}><I.route size={15} /></span><span style={{flex:1}}>Lean V1</span><I.arrowUR size={12} style={{color:"var(--ink-3)",opacity:0.5}} /></a>
+        </div>
+      </aside>
+
+      {/* main */}
+      <div style={{ flex:1, display:'flex', flexDirection:'column', minWidth:0 }}>
+        <header style={{ height:60, flexShrink:0, borderBottom:'1px solid var(--hairline)', background:'color-mix(in oklab, var(--paper) 80%, transparent)', backdropFilter:'blur(10px)', WebkitBackdropFilter:'blur(10px)', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0 28px' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:10, ...L.mono, fontSize:11.5, color:'var(--ink-3)', letterSpacing:0.5 }}>
+            <span>{W.org.name}</span><span>/</span><span style={{ color:'var(--ink)' }}>Configuration</span>
+          </div>
+          <div style={{ display:'flex', alignItems:'center', gap:18 }}>
+            <span style={{ display:'flex', alignItems:'center', gap:7, fontSize:12.5, color: save==='saving'?'var(--ochre)':'var(--sage)', fontWeight:500 }}>
+              <span style={{ width:7, height:7, borderRadius:99, background:'currentColor', animation: save==='saving'?'breathe 1s ease-in-out infinite':'none' }} />
+              {save==='saving'?'Saving…':'All changes saved'}
+            </span>
+            <div style={{ display:'flex', alignItems:'center', gap:9 }}>
+              <div style={{ width:32, height:32, borderRadius:99, background:'var(--ink)', color:'#fff', fontSize:11.5, fontWeight:600, display:'flex', alignItems:'center', justifyContent:'center' }}>DW</div>
+              <div style={{ lineHeight:1.2 }}><div style={{ fontSize:12.5, fontWeight:600 }}>Dana Whit</div><div style={{ fontSize:11, color:'var(--ink-3)' }}>Chief of Staff</div></div>
+            </div>
+          </div>
+        </header>
+
+        <main className="noscroll" style={{ flex:1, overflowY:'auto', padding:'34px 40px 60px' }}>
+          <div style={{ maxWidth:880, margin:'0 auto' }}>{screens[active]}</div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<AdminApp />);
+</script>
+</body>
+</html>
