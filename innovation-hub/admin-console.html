@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI Chief of Staff — Admin Console</title>
 <style>
+/* inlined system.css */
 /* ============================================================
    CALM INTELLIGENCE — design system for an AI Chief of Staff
    Premium · Executive · Minimal · High-signal · Trustworthy
@@ -95,15 +96,15 @@ body {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { 0% { transform: scale(0.78); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-
-html,body{background:var(--paper);}#root{min-height:100vh;}
-.cs-goto:hover{background:var(--surface-3)!important;color:var(--ink)!important;}
-
+</style>
+<style>
+  html, body { background:var(--paper); }
+  #root { min-height:100vh; }
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script>/* React 18.3.1 UMD (inlined, no CDN) */
+<script>/* React 18.3.1 UMD inlined */
 /**
  * @license React
  * react.production.min.js
@@ -137,7 +138,7 @@ c.useState=function(a){return g.current.useState(a)};c.useSyncExternalStore=func
 })();
 
 </script>
-<script>/* ReactDOM 18.3.1 UMD (inlined, no CDN) */
+<script>/* ReactDOM 18.3.1 UMD inlined */
 /**
  * @license React
  * react-dom.production.min.js
@@ -408,7 +409,22 @@ function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmoun
 
 </script>
 
-<script>/* Emma Rodriguez — COO, global technology company (5,000 employees)
+
+<template id="__bundler_thumbnail" data-bg-color="#0F7682">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" rx="22" fill="#0F7682"/>
+    <circle cx="50" cy="50" r="13" fill="none" stroke="#fff" stroke-width="5"/>
+    <path d="M50 32v-7M50 75v-7M32 50h-7M75 50h-7" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+</template>
+
+
+
+
+
+<script>
+/* inlined data.js */
+/* Emma Rodriguez — COO, global technology company (5,000 employees)
    One realistic morning. Shared across all three concepts. */
 window.EMMA = {
   user: { name: 'Emma', full: 'Emma Rodriguez', role: 'Chief Operating Officer', org: 'Northpoint', initials: 'ER' },
@@ -554,8 +570,11 @@ window.EMMA.teamDetail = {
   },
 };
 
+
 </script>
-<script>/* Configuration dataset for the web Admin Console (control plane).
+<script>
+/* inlined web-data.js */
+/* Configuration dataset for the web Admin Console (control plane).
    Mirrors the org behind Emma's mobile cockpit — same Northpoint tenant. */
 window.WEB = {
   org: {
@@ -651,8 +670,10 @@ window.WEB = {
     { time:'Yest 14:05', actor:'AI', action:'Escalated London flights (past SLA)', tag:'Travel', detail:'Notified Travel desk' },
   ],
 };
+
 </script>
 <script>
+/* compiled ui.jsx */
 /* Shared icon set + primitives — minimal, stroke-based, currentColor.
    Exported to window for all concept files. */
 
@@ -961,6 +982,7 @@ Object.assign(window, {
 });
 </script>
 <script>
+/* compiled web-kit.jsx */
 /* WEB KIT — light "control plane" primitives for the Admin Console. */
 
 const L = {
@@ -1396,6 +1418,7 @@ Object.assign(window, {
 });
 </script>
 <script>
+/* compiled web-sections1.jsx */
 /* WEB SECTIONS 1 — Organization & Modules · Integrations · Approval Policies */
 
 const touch = () => window.__touch && window.__touch();
@@ -1868,6 +1891,7 @@ Object.assign(window, {
 });
 </script>
 <script>
+/* compiled web-sections2.jsx */
 /* WEB SECTIONS 2 — Users & Roles · Executive Preferences · Escalations & Notifications · Audit */
 
 const ACCESS_COLOR = {
@@ -2367,6 +2391,7 @@ Object.assign(window, {
 });
 </script>
 <script>
+/* compiled web-app.jsx */
 /* WEB APP — Admin Console shell: sidebar, topbar with save state, router. */
 
 function AdminApp() {
@@ -2507,159 +2532,41 @@ function AdminApp() {
         display: 'flex'
       }
     }, icon), label);
-  })))), /*#__PURE__*/React.createElement("div", {
+  })))), /*#__PURE__*/React.createElement("a", {
+    href: "AI Chief of Staff \u2014 Prototype.html",
+    target: "_blank",
     style: {
-      borderTop: "1px solid var(--hairline)",
-      paddingTop: 10,
-      marginTop: 4
+      display: 'flex',
+      alignItems: 'center',
+      gap: 10,
+      padding: '11px 12px',
+      borderRadius: 10,
+      background: 'var(--surface-2)',
+      border: '1px solid var(--hairline)',
+      textDecoration: 'none',
+      color: 'var(--ink-2)'
+    }
+  }, /*#__PURE__*/React.createElement(I.arrowUR, {
+    size: 16,
+    style: {
+      color: 'var(--teal)'
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: {
+      lineHeight: 1.2
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontFamily: "var(--mono)",
-      fontSize: 10,
+      fontSize: 12.5,
       fontWeight: 600,
-      letterSpacing: 1.2,
-      textTransform: "uppercase",
-      color: "var(--ink-3)",
-      padding: "0 10px 8px"
+      color: 'var(--ink)'
     }
-  }, "Navigate"), /*#__PURE__*/React.createElement("a", {
-    href: "/innovation-hub/index.html",
-    className: "cs-goto",
+  }, "Open Emma\u2019s cockpit"), /*#__PURE__*/React.createElement("div", {
     style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      padding: "8px 10px",
-      borderRadius: 9,
-      color: "var(--ink-2)",
-      textDecoration: "none",
-      fontFamily: "var(--sans)",
-      fontSize: 12.5,
-      fontWeight: 450,
-      marginBottom: 1
+      fontSize: 11,
+      color: 'var(--ink-3)'
     }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: "var(--ink-3)",
-      display: "flex",
-      flexShrink: 0
-    }
-  }, /*#__PURE__*/React.createElement(I.bolt, {
-    size: 15
-  })), /*#__PURE__*/React.createElement("span", {
-    style: {
-      flex: 1
-    }
-  }, "Mission Control"), /*#__PURE__*/React.createElement(I.arrowUR, {
-    size: 12,
-    style: {
-      color: "var(--ink-3)",
-      opacity: 0.5
-    }
-  })), /*#__PURE__*/React.createElement("a", {
-    href: "/innovation-hub/concepts.html",
-    className: "cs-goto",
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      padding: "8px 10px",
-      borderRadius: 9,
-      color: "var(--ink-2)",
-      textDecoration: "none",
-      fontFamily: "var(--sans)",
-      fontSize: 12.5,
-      fontWeight: 450,
-      marginBottom: 1
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: "var(--ink-3)",
-      display: "flex",
-      flexShrink: 0
-    }
-  }, /*#__PURE__*/React.createElement(I.spark, {
-    size: 15
-  })), /*#__PURE__*/React.createElement("span", {
-    style: {
-      flex: 1
-    }
-  }, "Concepts"), /*#__PURE__*/React.createElement(I.arrowUR, {
-    size: 12,
-    style: {
-      color: "var(--ink-3)",
-      opacity: 0.5
-    }
-  })), /*#__PURE__*/React.createElement("a", {
-    href: "/innovation-hub/final-arch.html",
-    className: "cs-goto",
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      padding: "8px 10px",
-      borderRadius: 9,
-      color: "var(--ink-2)",
-      textDecoration: "none",
-      fontFamily: "var(--sans)",
-      fontSize: 12.5,
-      fontWeight: 450,
-      marginBottom: 1
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: "var(--ink-3)",
-      display: "flex",
-      flexShrink: 0
-    }
-  }, /*#__PURE__*/React.createElement(I.gear, {
-    size: 15
-  })), /*#__PURE__*/React.createElement("span", {
-    style: {
-      flex: 1
-    }
-  }, "Final Architecture"), /*#__PURE__*/React.createElement(I.arrowUR, {
-    size: 12,
-    style: {
-      color: "var(--ink-3)",
-      opacity: 0.5
-    }
-  })), /*#__PURE__*/React.createElement("a", {
-    href: "/innovation-hub/AI-Chief-of-Staff-Why-How-Tech.html",
-    className: "cs-goto",
-    style: {
-      display: "flex",
-      alignItems: "center",
-      gap: 10,
-      padding: "8px 10px",
-      borderRadius: 9,
-      color: "var(--ink-2)",
-      textDecoration: "none",
-      fontFamily: "var(--sans)",
-      fontSize: 12.5,
-      fontWeight: 450,
-      marginBottom: 1
-    }
-  }, /*#__PURE__*/React.createElement("span", {
-    style: {
-      color: "var(--ink-3)",
-      display: "flex",
-      flexShrink: 0
-    }
-  }, /*#__PURE__*/React.createElement(I.doc, {
-    size: 15
-  })), /*#__PURE__*/React.createElement("span", {
-    style: {
-      flex: 1
-    }
-  }, "Product Brief"), /*#__PURE__*/React.createElement(I.arrowUR, {
-    size: 12,
-    style: {
-      color: "var(--ink-3)",
-      opacity: 0.5
-    }
-  })))), /*#__PURE__*/React.createElement("div", {
+  }, "The mobile app this configures")))), /*#__PURE__*/React.createElement("div", {
     style: {
       flex: 1,
       display: 'flex',
