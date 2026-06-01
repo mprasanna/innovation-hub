@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Chief of Staff — Mission Control Prototype</title>
+<style>
+/* ===== system.css (inlined) ===== */
+/* ============================================================
+   CALM INTELLIGENCE — design system for an AI Chief of Staff
+   Premium · Executive · Minimal · High-signal · Trustworthy
+   Bloomberg Terminal × Apple · Linear × Perplexity
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;450;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap');
+
+:root {
+  /* — Type — */
+  --sans: 'Geist', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* — Signal palette (calm, earthy — never neon) — */
+  --teal:        #0F7682;   /* intelligence / AI / primary action */
+  --teal-deep:   #0A5A64;
+  --teal-soft:   #E2F0F0;
+  --clay:        #B24A38;   /* critical / risk */
+  --clay-soft:   #F6E6E1;
+  --ochre:       #A8782A;   /* caution / at-risk / pending */
+  --ochre-soft:  #F5ECD9;
+  --sage:        #4E7C5C;   /* on-track / approved / positive */
+  --sage-soft:   #E4EEE6;
+  --iris:        #4B4F86;   /* decisions / scheduling */
+  --iris-soft:   #E9E9F2;
+
+  /* — Light (paper) surface — */
+  --paper:       #F4F2EC;   /* warm editorial paper */
+  --surface:     #FFFFFF;
+  --surface-2:   #FAF8F3;
+  --surface-3:   #EFEBE2;
+  --ink:         #1B1C1F;
+  --ink-2:       #5C5E66;
+  --ink-3:       #93949C;
+  --hairline:    rgba(27,28,31,0.085);
+  --hairline-2:  rgba(27,28,31,0.05);
+
+  /* — Dark (cockpit) surface — */
+  --d-bg:        #0C0E11;
+  --d-surface:   #15181D;
+  --d-surface-2: #1B1F26;
+  --d-surface-3: #232831;
+  --d-ink:       #F1F2F4;
+  --d-ink-2:     #9DA2AC;
+  --d-ink-3:     #686D77;
+  --d-hairline:  rgba(255,255,255,0.08);
+  --d-teal:      #3FB6C2;
+  --d-clay:      #E0775F;
+  --d-ochre:     #DBA94A;
+  --d-sage:      #6FB389;
+
+  /* — Geometry — */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+  --r-xl: 28px;
+  --shadow-card: 0 1px 2px rgba(27,28,31,0.04), 0 6px 18px rgba(27,28,31,0.05);
+  --shadow-lift: 0 2px 8px rgba(27,28,31,0.06), 0 18px 40px rgba(27,28,31,0.10);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* tabular figures for all data */
+.tnum { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
+
+/* hide scrollbars inside phones for clean capture */
+.noscroll::-webkit-scrollbar { width: 0; height: 0; }
+.noscroll { scrollbar-width: none; }
+
+/* subtle entrance */
+@keyframes riseIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(15,118,130,0.30); }
+  70% { box-shadow: 0 0 0 14px rgba(15,118,130,0); }
+  100% { box-shadow: 0 0 0 0 rgba(15,118,130,0); }
+}
+@keyframes breathe { 0%,100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes slideIn { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes slideUp { from { transform: translateY(101%); } to { transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn { 0% { transform: scale(0.78); } 60% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+</style>
+<style>
+  html, body { background:#E7E4DD; }
+  #root { min-height:100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<template id="__bundler_thumbnail" data-bg-color="#0C0E11">
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100" height="100" rx="22" fill="#0C0E11"/>
+    <circle cx="50" cy="50" r="20" fill="none" stroke="#3FB6C2" stroke-width="4"/>
+    <circle cx="50" cy="50" r="6" fill="#3FB6C2"/>
+  </svg>
+</template>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script>
+/* ===== data.js (inlined) ===== */
+/* Emma Rodriguez — COO, global technology company (5,000 employees)
+   One realistic morning. Shared across all three concepts. */
+window.EMMA = {
+  user: { name: 'Emma', full: 'Emma Rodriguez', role: 'Chief Operating Officer', org: 'Northpoint', initials: 'ER' },
+  now: '8:17',
+  date: 'Monday, June 1',
+
+  // headline counts
+  summary: {
+    decisions: 3,
+    atRisk: 2,
+    approvals: 12,
+    firstMeetingMins: 43,
+    escalations: 1,
+    checkins: { responded: 6, total: 8 },
+  },
+
+  // the one-line brief the AI leads with
+  lede: [
+    { t: 'Three decisions need you before noon.', tone: 'decision' },
+    { t: 'Two projects slipped overnight — Atlas and Mobile Relaunch.', tone: 'critical' },
+    { t: 'Northwind (Toronto) is escalating. They’re on your 11:00.', tone: 'critical' },
+    { t: '11 of 12 approvals are within policy. One exceeds your $100K limit.', tone: 'caution' },
+  ],
+
+  schedule: [
+    { id:'m1', time:'9:30',  end:'10:00', dur:'30m', title:'Exec Staff Sync', kind:'Internal', where:'Boardroom A', critical:false, attendees:7, note:null },
+    { id:'m2', time:'11:00', end:'11:30', dur:'30m', title:'Northwind QBR', kind:'Customer', where:'Zoom', critical:true, attendees:5,
+      note:'Likely to overrun by 30 min. Account is escalating — churn risk flagged.', flag:'escalation', overrun:true },
+    { id:'m3', time:'12:30', end:'13:00', dur:'30m', title:'1:1 — Marcus Lee', kind:'Team', where:'Office', critical:false, attendees:2,
+      note:'Project Atlas is blocked. Worth raising today.' },
+    { id:'m4', time:'14:30', end:'16:00', dur:'90m', title:'Q3 Board Prep', kind:'Board', where:'Boardroom A', critical:true, attendees:6,
+      note:'Needs the revised operating plan. Draft is 80% ready.' },
+    { id:'m5', time:'16:30', end:'17:00', dur:'30m', title:'Hiring Panel — Sr. PM, Platform', kind:'Hiring', where:'Zoom', critical:true, attendees:4,
+      note:'Requisition awaiting your decision before panel.' },
+  ],
+
+  approvals: [
+    { id:'a1', vendor:'Datadog', purpose:'Annual observability renewal', amount:48000, cat:'Software', requester:'Priya N.', policy:'within', rec:'Approve', reason:'Within $50K software policy. Renewal, no scope change.' },
+    { id:'a2', vendor:'Contractor — A. Boyd', purpose:'Platform contract extension, 3 mo', amount:12500, cat:'Contract', requester:'Marcus L.', policy:'within', rec:'Approve', reason:'Within policy. Backfill for open req.' },
+    { id:'a3', vendor:'Snowflake', purpose:'Net-new data warehouse expansion', amount:128000, cat:'Vendor', requester:'Devon R.', policy:'exception', rec:'Review', reason:'Exceeds your $100K threshold and requester’s authority. Needs your sign-off.' },
+    { id:'a4', vendor:'Offsite catering', purpose:'Q3 leadership offsite', amount:5000, cat:'Expense', requester:'Office Ops', policy:'within', rec:'Approve', reason:'Within policy and budget line.' },
+    { id:'a5', vendor:'Travel — L. Park', purpose:'Client visit reimbursement', amount:3200, cat:'Expense', requester:'L. Park', policy:'flag', rec:'Clarify', reason:'Possible duplicate of an April claim. Missing receipt.' },
+    { id:'a6', vendor:'Hiring requisition', purpose:'Senior PM, Platform — backfill', amount:0, cat:'Hiring', requester:'Marcus L.', policy:'decision', rec:'Decide', reason:'Open since 47 days. Panel is at 16:30 today.' },
+  ],
+
+  team: [
+    { id:'t1', name:'Sarah Chen', role:'Mobile Lead', project:'Mobile Relaunch', status:'at-risk', responded:true,
+      signal:'Plan doesn’t align with assigned priorities', detail:'Sarah’s stated focus is the design refresh; the relaunch ship-blocker (auth) is unassigned.' },
+    { id:'t2', name:'Marcus Lee', role:'Platform Eng', project:'Project Atlas', status:'at-risk', responded:true,
+      signal:'Blocked 2 days — data migration dependency', detail:'Atlas migration is waiting on the warehouse expansion (see Snowflake approval).' },
+    { id:'t3', name:'Devon Rao', role:'Data', project:'Warehouse', status:'on-track', responded:true, signal:'On plan', detail:'Pending your Snowflake decision to proceed.' },
+    { id:'t4', name:'Priya Nair', role:'Infra', project:'Reliability', status:'on-track', responded:true, signal:'On plan', detail:'SLO at 99.97% this week.' },
+    { id:'t5', name:'Liam Park', role:'GTM', project:'Northwind', status:'watch', responded:true, signal:'Owns the 11:00 escalation', detail:'Prepared the QBR recovery plan.' },
+    { id:'t6', name:'Ana Costa', role:'Design', project:'Mobile Relaunch', status:'on-track', responded:true, signal:'On plan', detail:'' },
+    { id:'t7', name:'Tom Reyes', role:'QA', project:'Mobile Relaunch', status:'pending', responded:false, signal:'No check-in — 2 days', detail:'Second missed check-in. Escalation threshold reached.' },
+    { id:'t8', name:'Nadia Haq', role:'Ops', project:'Atlas', status:'pending', responded:false, signal:'No check-in today', detail:'' },
+  ],
+
+  travel: {
+    city:'London', country:'United Kingdom', inDays:9, dates:'Jun 10 – Jun 13', purpose:'Northwind exec review + EMEA town hall',
+    items:[
+      { label:'Visa', status:'ok', detail:'Valid until 2027' },
+      { label:'Flights', status:'pending', detail:'Held, not ticketed', owner:'David — Travel Desk' },
+      { label:'Hotel', status:'pending', detail:'Awaiting confirmation', owner:'David — Travel Desk' },
+    ],
+    sla:'Flights unticketed for 4 days — past the 48h SLA.',
+  },
+
+  // yesterday's meeting, ready to turn into actions
+  minutes: {
+    title:'Platform Architecture Review', date:'Fri, May 29', dur:'52 min', attendees:6,
+    summary:'The team aligned on consolidating to a single data warehouse and pausing the dual-write migration until the Snowflake expansion is approved. Auth remains the relaunch blocker and is currently unowned.',
+    decisions:[
+      'Consolidate to a single warehouse; retire the legacy store by Q4.',
+      'Pause dual-write migration until expansion is funded.',
+    ],
+    actions:[
+      { id:'ac1', text:'File the Snowflake expansion for COO approval', owner:'Devon Rao', due:'Today', system:'Odoo', priority:'high', confirmed:true },
+      { id:'ac2', text:'Assign an owner to the auth ship-blocker', owner:'Sarah Chen', due:'Jun 2', system:'monday.com', priority:'high', confirmed:false },
+      { id:'ac3', text:'Draft legacy-store retirement plan', owner:'Marcus Lee', due:'Jun 6', system:'monday.com', priority:'med', confirmed:true },
+      { id:'ac4', text:'Schedule warehouse cutover dry-run', owner:'Priya Nair', due:'Jun 9', system:'monday.com', priority:'med', confirmed:false },
+    ],
+  },
+
+  // an inbound invite for the calendar-intelligence flow
+  invite: {
+    from:'Northwind — Karen Voss', title:'Add: Escalation working session', when:'Today, 11:30 – 12:30', conflictsWith:'Northwind QBR (overruns)', 
+    rec:'Reschedule', reason:'Back-to-back with the QBR that will likely overrun. Suggest 13:30, after your 1:1.',
+    alts:['13:30 – 14:00 today','Tomorrow 9:30','Tomorrow 15:00'],
+  },
+};
+
+/* ── Detail-level intelligence for the decision flows ── */
+window.EMMA.approvalDetail = {
+  a3: { // Snowflake — the exception
+    risk:[
+      { t:'Exceeds your $100K approval limit by $28,000', sev:'high' },
+      { t:'Requester (Devon R.) is two levels below signing authority', sev:'high' },
+      { t:'No competing quote attached', sev:'med' },
+    ],
+    impact:'Unblocks Project Atlas (currently blocked 2 days). Marcus’ migration cannot resume without it.',
+    budget:{ line:'Data Platform — FY Capex', used:62, of:'$210K remaining' },
+    doc:'snowflake_expansion_SOW.pdf',
+    history:'First request from this vendor this quarter. No prior exceptions on Devon’s record.',
+    similar:'You approved a $96K Databricks expansion in March — within limit.',
+  },
+  a6: { // hiring requisition
+    risk:[
+      { t:'Open 47 days — above your 30-day target', sev:'med' },
+      { t:'Backfill is the named owner of a stalled ship-blocker', sev:'high' },
+    ],
+    impact:'Panel is at 16:30 today and cannot proceed without your go-ahead. Marcus’ team is at 60% capacity.',
+    budget:{ line:'Platform Headcount — approved plan', used:80, of:'1 of 2 reqs open' },
+    doc:'req_SrPM_Platform.pdf',
+    history:'Role approved in the annual plan. Comp band within range.',
+    similar:'',
+  },
+  a1: { risk:[{ t:'Renewal, no scope change', sev:'low' }], impact:'Maintains observability across all production services.', budget:{ line:'Software — Eng', used:48, of:'$310K remaining' }, doc:'datadog_renewal_2026.pdf', history:'Renewed at the same rate last year.', similar:'' },
+  a5: { risk:[{ t:'Possible duplicate of an April claim ($3,200)', sev:'high' },{ t:'Receipt missing', sev:'med' }], impact:'Low. Single reimbursement.', budget:{ line:'T&E — GTM', used:71, of:'$40K remaining' }, doc:null, history:'L. Park filed a similar amount on Apr 14.', similar:'' },
+};
+
+window.EMMA.teamDetail = {
+  t1: { // Sarah — the differentiated insight
+    launchRisk:72, trend:'up',
+    stated:'Polishing the design refresh and reviewing Ana’s component library.',
+    assigned:[
+      { task:'Auth ship-blocker (relaunch gate)', status:'unowned', priority:'P0', note:'No one is on the critical path item' },
+      { task:'Design refresh', status:'in-progress', priority:'P2', note:'Sarah’s stated focus' },
+      { task:'Crash-rate burndown', status:'not-started', priority:'P1', note:'Due before ship' },
+    ],
+    insight:'Sarah’s stated plan is P2 work. The P0 ship-blocker (auth) is unowned, and the P1 crash burndown hasn’t started. Mobile Relaunch ship date is at risk.',
+    suggest:[ 'Reassign auth to Sarah in your 1:1', 'Pull crash burndown forward', 'Flag relaunch date to the steering group' ],
+  },
+  t2: { // Marcus — blocked
+    launchRisk:55, trend:'flat',
+    stated:'Prepping the legacy-store retirement plan; blocked on the migration.',
+    assigned:[
+      { task:'Atlas data migration', status:'blocked', priority:'P0', note:'Waiting on Snowflake expansion approval' },
+      { task:'Legacy-store retirement plan', status:'in-progress', priority:'P1', note:'On track' },
+    ],
+    insight:'Marcus is blocked, not off-plan. Atlas resumes the moment you clear the Snowflake approval — the two items are linked.',
+    suggest:[ 'Approve Snowflake to unblock', 'Confirm new Atlas date after approval' ],
+  },
+};
+
+
+</script>
+<script type="text/babel">
+/* ===== ui.jsx (inlined) ===== */
+/* Shared icon set + primitives — minimal, stroke-based, currentColor.
+   Exported to window for all concept files. */
+
+const Icon = ({ d, size = 20, sw = 1.6, fill = 'none', children, style }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor"
+    strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" style={style}>
+    {d ? <path d={d} /> : children}
+  </svg>
+);
+
+const I = {
+  clock:    (p) => <Icon {...p}><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></Icon>,
+  calendar: (p) => <Icon {...p}><rect x="3.5" y="4.5" width="17" height="16" rx="3"/><path d="M3.5 9h17M8 3v3M16 3v3"/></Icon>,
+  check:    (p) => <Icon {...p}><path d="M20 6L9 17l-5-5"/></Icon>,
+  checkCircle: (p) => <Icon {...p}><circle cx="12" cy="12" r="9"/><path d="M8.5 12l2.5 2.5 4.5-5"/></Icon>,
+  x:        (p) => <Icon {...p}><path d="M6 6l12 12M18 6L6 18"/></Icon>,
+  chevR:    (p) => <Icon {...p}><path d="M9 6l6 6-6 6"/></Icon>,
+  chevD:    (p) => <Icon {...p}><path d="M6 9l6 6 6-6"/></Icon>,
+  alert:    (p) => <Icon {...p}><path d="M12 3.5L22 19H2L12 3.5z"/><path d="M12 10v4M12 17v.5"/></Icon>,
+  users:    (p) => <Icon {...p}><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 5.5a3 3 0 010 5.4M16.5 14c2.4.4 4 2.3 4 5"/></Icon>,
+  plane:    (p) => <Icon {...p}><path d="M10.5 13L3 15v-2l7.5-3.5L9 4l1.8-.5L15 8l5-1.5a1.6 1.6 0 01.6 3.1L15 12l-1.5 6L12 18l-1.5-5z"/></Icon>,
+  spark:    (p) => <Icon {...p}><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6L12 3z"/></Icon>,
+  mic:      (p) => <Icon {...p}><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0013 0M12 18v3"/></Icon>,
+  arrowUR:  (p) => <Icon {...p}><path d="M7 17L17 7M8 7h9v9"/></Icon>,
+  shield:   (p) => <Icon {...p}><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/></Icon>,
+  flag:     (p) => <Icon {...p}><path d="M5 21V4M5 4h11l-1.5 3.5L16 11H5"/></Icon>,
+  doc:      (p) => <Icon {...p}><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 15.5h6"/></Icon>,
+  bolt:     (p) => <Icon {...p}><path d="M13 3L5 13h6l-1 8 8-10h-6l1-8z"/></Icon>,
+  search:   (p) => <Icon {...p}><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></Icon>,
+  dollar:   (p) => <Icon {...p}><path d="M12 3v18M16 7.5c0-2-1.8-3-4-3s-4 1-4 3 1.8 2.6 4 3 4 1 4 3-1.8 3-4 3-4-1-4-3"/></Icon>,
+  grid:     (p) => <Icon {...p}><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></Icon>,
+  inbox:    (p) => <Icon {...p}><path d="M3.5 13.5L6 5h12l2.5 8.5v5a2 2 0 01-2 2H5.5a2 2 0 01-2-2v-5z"/><path d="M3.5 13.5H9l1 2.5h4l1-2.5h5.5"/></Icon>,
+  route:    (p) => <Icon {...p}><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.5 6H15a3 3 0 013 3v6.5"/></Icon>,
+  pause:    (p) => <Icon {...p}><rect x="7" y="5" width="3.5" height="14" rx="1"/><rect x="13.5" y="5" width="3.5" height="14" rx="1"/></Icon>,
+  pin:      (p) => <Icon {...p}><path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></Icon>,
+  send:     (p) => <Icon {...p}><path d="M4 12l16-8-6 16-3.5-6L4 12z"/></Icon>,
+  edit:     (p) => <Icon {...p}><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></Icon>,
+};
+
+// status → palette key
+const STATUS = {
+  'at-risk':  { c: 'var(--clay)',  s: 'var(--clay-soft)',  label: 'At risk' },
+  'watch':    { c: 'var(--ochre)', s: 'var(--ochre-soft)', label: 'Watch' },
+  'on-track': { c: 'var(--sage)',  s: 'var(--sage-soft)',  label: 'On track' },
+  'pending':  { c: 'var(--ink-3)', s: 'var(--surface-3)',  label: 'No check-in' },
+};
+const POLICY = {
+  within:   { c:'var(--sage)',  label:'Within policy' },
+  exception:{ c:'var(--clay)',  label:'Exception' },
+  flag:     { c:'var(--ochre)', label:'Needs clarity' },
+  decision: { c:'var(--iris)',  label:'Decision' },
+};
+
+function Dot({ color, size = 7, pulse }) {
+  return <span style={{
+    width: size, height: size, borderRadius: 99, background: color,
+    display: 'inline-block', flexShrink: 0,
+    animation: pulse ? 'breathe 2.4s ease-in-out infinite' : 'none',
+  }} />;
+}
+
+function money(n) { return n === 0 ? '—' : '$' + n.toLocaleString('en-US'); }
+
+Object.assign(window, { Icon, I, STATUS, POLICY, Dot, money });
+
+</script>
+<script type="text/babel">
+/* ===== frames/ios-frame.jsx (inlined) ===== */
+
+/* BEGIN USAGE */
+// iOS.jsx — Simplified iOS 26 (Liquid Glass) device frame
+// Based on the iOS 26 UI Kit + Figma status bar spec. No assets, no deps.
+// Exports (to window): IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard
+//
+// Usage — wrap your screen content in <IOSDevice> to get the bezel, status bar
+// and home indicator (props: title, dark, keyboard):
+//
+//   <IOSDevice title="Settings">
+//     ...your screen content...
+//   </IOSDevice>
+//   <IOSDevice dark title="Search" keyboard>…</IOSDevice>
+/* END USAGE */
+
+// ─────────────────────────────────────────────────────────────
+// Status bar
+// ─────────────────────────────────────────────────────────────
+function IOSStatusBar({ dark = false, time = '9:41' }) {
+  const c = dark ? '#fff' : '#000';
+  return (
+    <div style={{
+      display: 'flex', gap: 154, alignItems: 'center', justifyContent: 'center',
+      padding: '21px 24px 19px', boxSizing: 'border-box',
+      position: 'relative', zIndex: 20, width: '100%',
+    }}>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: 1.5 }}>
+        <span style={{
+          fontFamily: '-apple-system, "SF Pro", system-ui', fontWeight: 590,
+          fontSize: 17, lineHeight: '22px', color: c,
+        }}>{time}</span>
+      </div>
+      <div style={{ flex: 1, height: 22, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 1, paddingRight: 1 }}>
+        <svg width="19" height="12" viewBox="0 0 19 12">
+          <rect x="0" y="7.5" width="3.2" height="4.5" rx="0.7" fill={c}/>
+          <rect x="4.8" y="5" width="3.2" height="7" rx="0.7" fill={c}/>
+          <rect x="9.6" y="2.5" width="3.2" height="9.5" rx="0.7" fill={c}/>
+          <rect x="14.4" y="0" width="3.2" height="12" rx="0.7" fill={c}/>
+        </svg>
+        <svg width="17" height="12" viewBox="0 0 17 12">
+          <path d="M8.5 3.2C10.8 3.2 12.9 4.1 14.4 5.6L15.5 4.5C13.7 2.7 11.2 1.5 8.5 1.5C5.8 1.5 3.3 2.7 1.5 4.5L2.6 5.6C4.1 4.1 6.2 3.2 8.5 3.2Z" fill={c}/>
+          <path d="M8.5 6.8C9.9 6.8 11.1 7.3 12 8.2L13.1 7.1C11.8 5.9 10.2 5.1 8.5 5.1C6.8 5.1 5.2 5.9 3.9 7.1L5 8.2C5.9 7.3 7.1 6.8 8.5 6.8Z" fill={c}/>
+          <circle cx="8.5" cy="10.5" r="1.5" fill={c}/>
+        </svg>
+        <svg width="27" height="13" viewBox="0 0 27 13">
+          <rect x="0.5" y="0.5" width="23" height="12" rx="3.5" stroke={c} strokeOpacity="0.35" fill="none"/>
+          <rect x="2" y="2" width="20" height="9" rx="2" fill={c}/>
+          <path d="M25 4.5V8.5C25.8 8.2 26.5 7.2 26.5 6.5C26.5 5.8 25.8 4.8 25 4.5Z" fill={c} fillOpacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Liquid glass pill — blur + tint + shine
+// ─────────────────────────────────────────────────────────────
+function IOSGlassPill({ children, dark = false, style = {} }) {
+  return (
+    <div style={{
+      height: 44, minWidth: 44, borderRadius: 9999,
+      position: 'relative', overflow: 'hidden',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      boxShadow: dark
+        ? '0 2px 6px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.2)'
+        : '0 1px 3px rgba(0,0,0,0.07), 0 3px 10px rgba(0,0,0,0.06)',
+      ...style,
+    }}>
+      {/* blur + tint */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.28)' : 'rgba(255,255,255,0.5)',
+      }} />
+      {/* shine */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 9999,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15), inset -1px -1px 1px rgba(255,255,255,0.08)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', padding: '0 4px' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Navigation bar — glass pills + large title
+// ─────────────────────────────────────────────────────────────
+function IOSNavBar({ title = 'Title', dark = false, trailingIcon = true }) {
+  const muted = dark ? 'rgba(255,255,255,0.6)' : '#404040';
+  const text = dark ? '#fff' : '#000';
+  const pillIcon = (content) => (
+    <IOSGlassPill dark={dark}>
+      <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        {content}
+      </div>
+    </IOSGlassPill>
+  );
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 10,
+      paddingTop: 62, paddingBottom: 10, position: 'relative', zIndex: 5,
+    }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px',
+      }}>
+        {/* back chevron */}
+        {pillIcon(
+          <svg width="12" height="20" viewBox="0 0 12 20" fill="none" style={{ marginLeft: -1 }}>
+            <path d="M10 2L2 10l8 8" stroke={muted} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        )}
+        {/* trailing ellipsis */}
+        {trailingIcon && pillIcon(
+          <svg width="22" height="6" viewBox="0 0 22 6">
+            <circle cx="3" cy="3" r="2.5" fill={muted}/>
+            <circle cx="11" cy="3" r="2.5" fill={muted}/>
+            <circle cx="19" cy="3" r="2.5" fill={muted}/>
+          </svg>
+        )}
+      </div>
+      {/* large title */}
+      <div style={{
+        padding: '0 16px',
+        fontFamily: '-apple-system, system-ui',
+        fontSize: 34, fontWeight: 700, lineHeight: '41px',
+        color: text, letterSpacing: 0.4,
+      }}>{title}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Grouped list (inset card, r:26) + row (52px)
+// ─────────────────────────────────────────────────────────────
+function IOSListRow({ title, detail, icon, chevron = true, isLast = false, dark = false }) {
+  const text = dark ? '#fff' : '#000';
+  const sec = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const ter = dark ? 'rgba(235,235,245,0.3)' : 'rgba(60,60,67,0.3)';
+  const sep = dark ? 'rgba(84,84,88,0.65)' : 'rgba(60,60,67,0.12)';
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', minHeight: 52,
+      padding: '0 16px', position: 'relative',
+      fontFamily: '-apple-system, system-ui', fontSize: 17,
+      letterSpacing: -0.43,
+    }}>
+      {icon && (
+        <div style={{
+          width: 30, height: 30, borderRadius: 7, background: icon,
+          marginRight: 12, flexShrink: 0,
+        }} />
+      )}
+      <div style={{ flex: 1, color: text }}>{title}</div>
+      {detail && <span style={{ color: sec, marginRight: 6 }}>{detail}</span>}
+      {chevron && (
+        <svg width="8" height="14" viewBox="0 0 8 14" style={{ flexShrink: 0 }}>
+          <path d="M1 1l6 6-6 6" stroke={ter} strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      )}
+      {!isLast && (
+        <div style={{
+          position: 'absolute', bottom: 0, right: 0,
+          left: icon ? 58 : 16, height: 0.5, background: sep,
+        }} />
+      )}
+    </div>
+  );
+}
+
+function IOSList({ header, children, dark = false }) {
+  const hc = dark ? 'rgba(235,235,245,0.6)' : 'rgba(60,60,67,0.6)';
+  const bg = dark ? '#1C1C1E' : '#fff';
+  return (
+    <div>
+      {header && (
+        <div style={{
+          fontFamily: '-apple-system, system-ui', fontSize: 13,
+          color: hc, textTransform: 'uppercase',
+          padding: '8px 36px 6px', letterSpacing: -0.08,
+        }}>{header}</div>
+      )}
+      <div style={{
+        background: bg, borderRadius: 26,
+        margin: '0 16px', overflow: 'hidden',
+      }}>{children}</div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Device frame
+// ─────────────────────────────────────────────────────────────
+function IOSDevice({
+  children, width = 402, height = 874, dark = false,
+  title, keyboard = false,
+}) {
+  return (
+    <div style={{
+      width, height, borderRadius: 48, overflow: 'hidden',
+      position: 'relative', background: dark ? '#000' : '#F2F2F7',
+      boxShadow: '0 40px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12)',
+      fontFamily: '-apple-system, system-ui, sans-serif',
+      WebkitFontSmoothing: 'antialiased',
+    }}>
+      {/* dynamic island */}
+      <div style={{
+        position: 'absolute', top: 11, left: '50%', transform: 'translateX(-50%)',
+        width: 126, height: 37, borderRadius: 24, background: '#000', zIndex: 50,
+      }} />
+      {/* status bar (absolute) */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, zIndex: 10 }}>
+        <IOSStatusBar dark={dark} />
+      </div>
+      {/* nav + content */}
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        {title !== undefined && <IOSNavBar title={title} dark={dark} />}
+        <div style={{ flex: 1, overflow: 'auto' }}>{children}</div>
+        {keyboard && <IOSKeyboard dark={dark} />}
+      </div>
+      {/* home indicator — always on top */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 60,
+        height: 34, display: 'flex', justifyContent: 'center', alignItems: 'flex-end',
+        paddingBottom: 8, pointerEvents: 'none',
+      }}>
+        <div style={{
+          width: 139, height: 5, borderRadius: 100,
+          background: dark ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.25)',
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// Keyboard — iOS 26 liquid glass
+// ─────────────────────────────────────────────────────────────
+function IOSKeyboard({ dark = false }) {
+  const glyph = dark ? 'rgba(255,255,255,0.7)' : '#595959';
+  const sugg = dark ? 'rgba(255,255,255,0.6)' : '#333';
+  const keyBg = dark ? 'rgba(255,255,255,0.22)' : 'rgba(255,255,255,0.85)';
+
+  // special-key icons
+  const icons = {
+    shift: <svg width="19" height="17" viewBox="0 0 19 17"><path d="M9.5 1L1 9.5h4.5V16h8V9.5H18L9.5 1z" fill={glyph}/></svg>,
+    del: <svg width="23" height="17" viewBox="0 0 23 17"><path d="M7 1h13a2 2 0 012 2v11a2 2 0 01-2 2H7l-6-7.5L7 1z" fill="none" stroke={glyph} strokeWidth="1.6" strokeLinejoin="round"/><path d="M10 5l7 7M17 5l-7 7" stroke={glyph} strokeWidth="1.6" strokeLinecap="round"/></svg>,
+    ret: <svg width="20" height="14" viewBox="0 0 20 14"><path d="M18 1v6H4m0 0l4-4M4 7l4 4" fill="none" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  };
+
+  const key = (content, { w, flex, ret, fs = 25, k } = {}) => (
+    <div key={k} style={{
+      height: 42, borderRadius: 8.5,
+      flex: flex ? 1 : undefined, width: w, minWidth: 0,
+      background: ret ? '#08f' : keyBg,
+      boxShadow: '0 1px 0 rgba(0,0,0,0.075)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: '-apple-system, "SF Compact", system-ui',
+      fontSize: fs, fontWeight: 458, color: ret ? '#fff' : glyph,
+    }}>{content}</div>
+  );
+
+  const row = (keys, pad = 0) => (
+    <div style={{ display: 'flex', gap: 6.5, justifyContent: 'center', padding: `0 ${pad}px` }}>
+      {keys.map(l => key(l, { flex: true, k: l }))}
+    </div>
+  );
+
+  return (
+    <div style={{
+      position: 'relative', zIndex: 15, borderRadius: 27, overflow: 'hidden',
+      padding: '11px 0 2px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      boxShadow: dark
+        ? '0 -2px 20px rgba(0,0,0,0.09)'
+        : '0 -1px 6px rgba(0,0,0,0.018), 0 -3px 20px rgba(0,0,0,0.012)',
+    }}>
+      {/* liquid glass bg — same recipe as nav pills */}
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        backdropFilter: 'blur(12px) saturate(180%)',
+        WebkitBackdropFilter: 'blur(12px) saturate(180%)',
+        background: dark ? 'rgba(120,120,128,0.14)' : 'rgba(255,255,255,0.25)',
+      }} />
+      <div style={{
+        position: 'absolute', inset: 0, borderRadius: 27,
+        boxShadow: dark
+          ? 'inset 1.5px 1.5px 1px rgba(255,255,255,0.15)'
+          : 'inset 1.5px 1.5px 1px rgba(255,255,255,0.7), inset -1px -1px 1px rgba(255,255,255,0.4)',
+        border: dark ? '0.5px solid rgba(255,255,255,0.15)' : '0.5px solid rgba(0,0,0,0.06)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* autocorrect bar */}
+      <div style={{
+        display: 'flex', gap: 20, alignItems: 'center',
+        padding: '8px 22px 13px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {['"The"', 'the', 'to'].map((w, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <div style={{ width: 1, height: 25, background: '#ccc', opacity: 0.3 }} />}
+            <div style={{
+              flex: 1, textAlign: 'center',
+              fontFamily: '-apple-system, system-ui', fontSize: 17,
+              color: sugg, letterSpacing: -0.43, lineHeight: '22px',
+            }}>{w}</div>
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* key layout */}
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 13,
+        padding: '0 6.5px', width: '100%', boxSizing: 'border-box',
+        position: 'relative',
+      }}>
+        {row(['q','w','e','r','t','y','u','i','o','p'])}
+        {row(['a','s','d','f','g','h','j','k','l'], 20)}
+        <div style={{ display: 'flex', gap: 14.25, alignItems: 'center' }}>
+          {key(icons.shift, { w: 45, k: 'shift' })}
+          <div style={{ display: 'flex', gap: 6.5, flex: 1 }}>
+            {['z','x','c','v','b','n','m'].map(l => key(l, { flex: true, k: l }))}
+          </div>
+          {key(icons.del, { w: 45, k: 'del' })}
+        </div>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+          {key('ABC', { w: 92.25, fs: 18, k: 'abc' })}
+          {key('', { flex: true, k: 'space' })}
+          {key(icons.ret, { w: 92.25, ret: true, k: 'ret' })}
+        </div>
+      </div>
+
+      {/* bottom spacer (emoji+mic area, icons omitted) */}
+      <div style={{ height: 56, width: '100%', position: 'relative' }} />
+    </div>
+  );
+}
+
+Object.assign(window, {
+  IOSDevice, IOSStatusBar, IOSNavBar, IOSGlassPill, IOSList, IOSListRow, IOSKeyboard,
+});
+
+</script>
+<script type="text/babel">
+/* ===== proto-kit.jsx (inlined) ===== */
+/* PROTO KIT — dark Mission Control app primitives.
+   Screen shell, nav header, buttons, fields, confirmation sheet. */
+
+const D = {
+  bg:'var(--d-bg)', surface:'var(--d-surface)', s2:'var(--d-surface-2)', s3:'var(--d-surface-3)',
+  ink:'var(--d-ink)', ink2:'var(--d-ink-2)', ink3:'var(--d-ink-3)', line:'var(--d-hairline)',
+  teal:'var(--d-teal)', clay:'var(--d-clay)', ochre:'var(--d-ochre)', sage:'var(--d-sage)', iris:'#8E93D6',
+  mono:{ fontFamily:'var(--mono)', letterSpacing:0.4 },
+};
+const SEV = { high:D.clay, med:D.ochre, low:D.sage };
+
+function nav() { return window.__nav || { go(){}, back(){} }; }
+
+// ── Screen shell: status-bar-safe, scrollable body, optional sticky footer
+function Screen({ title, eyebrow, onBack, children, footer, trailing, animate=true }) {
+  return (
+    <div className="noscroll" style={{ position:'absolute', inset:0, background:D.bg, color:D.ink,
+      display:'flex', flexDirection:'column' }}>
+      <div style={{ paddingTop:54, paddingBottom:12, paddingLeft:14, paddingRight:14, flexShrink:0,
+        display:'flex', alignItems:'center', gap:12, borderBottom:'1px solid '+D.line, background:D.bg, position:'relative', zIndex:5 }}>
+        <button onClick={()=>nav().back()} style={{ width:38, height:38, borderRadius:99, border:'1px solid '+D.line, background:D.surface, color:D.ink2, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, cursor:'pointer' }}>
+          <svg width="11" height="18" viewBox="0 0 11 18" fill="none"><path d="M9 2L2 9l7 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+        <div style={{ flex:1, minWidth:0 }}>
+          {eyebrow && <div style={{ ...D.mono, fontSize:9.5, fontWeight:600, letterSpacing:1.4, textTransform:'uppercase', color:D.ink3 }}>{eyebrow}</div>}
+          <div style={{ fontSize:18, fontWeight:600, letterSpacing:-0.3, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{title}</div>
+        </div>
+        {trailing}
+      </div>
+      <div className="noscroll" style={{ flex:1, overflowY:'auto', overflowX:'hidden' }}>{children}</div>
+      {footer && <div style={{ flexShrink:0, padding:'12px 16px calc(env(safe-area-inset-bottom) + 26px)', borderTop:'1px solid '+D.line, background:'rgba(12,14,17,0.86)', backdropFilter:'blur(14px)', WebkitBackdropFilter:'blur(14px)' }}>{footer}</div>}
+    </div>
+  );
+}
+
+function Btn({ label, kind='primary', icon, onClick, flex=true, small=false }) {
+  const map = {
+    primary:{ background:D.teal, color:'#06181B', border:'none' },
+    soft:{ background:D.s3, color:D.ink, border:'none' },
+    ghost:{ background:'transparent', color:D.ink2, border:'1px solid '+D.line },
+    danger:{ background:'transparent', color:D.clay, border:'1px solid color-mix(in oklab, var(--d-clay) 42%, transparent)' },
+  }[kind];
+  return (
+    <button onClick={onClick} style={{ ...D.mono, flex: flex?1:undefined, display:'flex', alignItems:'center', justifyContent:'center', gap:7,
+      padding: small?'9px 14px':'13px 16px', borderRadius:11, fontSize: small?11.5:12.5, fontWeight:600, letterSpacing:0.4, textTransform:'uppercase',
+      cursor:'pointer', ...map }}>
+      {icon}{label}
+    </button>
+  );
+}
+
+// labelled section block
+function Block({ label, children, right, pad=true }) {
+  return (
+    <div style={{ padding:'18px 18px 0' }}>
+      {label && <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', marginBottom:10 }}>
+        <div style={{ ...D.mono, fontSize:10, fontWeight:600, letterSpacing:1.4, textTransform:'uppercase', color:D.ink3 }}>{label}</div>
+        {right}
+      </div>}
+      <div style={{ background: pad?D.surface:'transparent', border: pad?'1px solid '+D.line:'none', borderRadius:'var(--r-md)', overflow:'hidden' }}>{children}</div>
+    </div>
+  );
+}
+
+function Row({ label, value, mono, last, valColor }) {
+  return (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:14, padding:'13px 15px', borderBottom: last?'none':'1px solid '+D.line }}>
+      <span style={{ fontSize:13, color:D.ink3 }}>{label}</span>
+      <span style={{ fontSize:13.5, fontWeight:500, color: valColor||D.ink, textAlign:'right', ...(mono?D.mono:{}) }}>{value}</span>
+    </div>
+  );
+}
+
+// bottom confirmation sheet
+function Sheet({ open, onClose, children }) {
+  if (!open) return null;
+  return (
+    <div onClick={onClose} style={{ position:'absolute', inset:0, zIndex:40, background:'rgba(0,0,0,0.5)', display:'flex', alignItems:'flex-end' }}>
+      <div onClick={e=>e.stopPropagation()} style={{ width:'100%', background:D.s2, borderTopLeftRadius:26, borderTopRightRadius:26, borderTop:'1px solid '+D.line, padding:'10px 18px calc(env(safe-area-inset-bottom) + 28px)' }}>
+        <div style={{ width:38, height:4, borderRadius:99, background:D.s3, margin:'0 auto 18px' }} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// animated success check (default-visible; scale pop is enhancement only)
+function SuccessCheck({ color }) {
+  return (
+    <div style={{ width:66, height:66, borderRadius:99, margin:'4px auto 16px', display:'flex', alignItems:'center', justifyContent:'center',
+      background:'color-mix(in oklab, '+(color||D.sage)+' 18%, transparent)', animation:'popIn .4s cubic-bezier(.22,1.2,.4,1)' }}>
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7" stroke={color||D.sage} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+    </div>
+  );
+}
+
+function Pill({ children, color, soft }) {
+  return <span style={{ ...D.mono, fontSize:9.5, fontWeight:600, letterSpacing:0.8, textTransform:'uppercase', color, background:'color-mix(in oklab, '+color+' 16%, transparent)', padding:'3px 7px', borderRadius:5 }}>{children}</span>;
+}
+
+Object.assign(window, { D, SEV, nav, Screen, Btn, Block, Row, Sheet, SuccessCheck, Pill });
+
+</script>
+<script type="text/babel">
+/* ===== proto-store.jsx (inlined) ===== */
+/* PROTO STORE — shared live state: resolutions, attention score, timeline,
+   day-narrative phase. Plus AttentionRing + SwipeCard + Timeline view. */
+
+// each decision Emma can clear → score weight + the timeline event it writes
+const DECISIONS = {
+  northwind: { points:8,  event:{ time:'8:42', title:'Northwind conflict resolved', detail:'Working session moved to 13:30, after the QBR', tone:'ok' } },
+  snowflake: { points:12, event:{ time:'9:15', title:'Snowflake expansion approved', detail:'$128K override logged · Project Atlas unblocked', tone:'ok' } },
+  sarah:     { points:9,  event:{ time:'9:30', title:'Mobile Relaunch risk addressed', detail:'Auth ship-blocker reassigned to Sarah in 1:1', tone:'ok' } },
+  hiring:    { points:7,  event:{ time:'9:48', title:'Sr. PM requisition approved', detail:'Panel cleared to proceed at 16:30', tone:'ok' } },
+};
+const DECISION_KEYS = Object.keys(DECISIONS);
+const BASE_SCORE = 60; // 2 missed check-ins already weighing it down; climbs to 96 when clear
+
+const Store = (function () {
+  const initial = () => ({
+    resolved: {},   // key -> { action, label }
+    timeline: [
+      { time:'7:00', title:'Day modelled overnight', detail:'Calendar, email, ERP, monday.com & Odoo synced', tone:'info' },
+      { time:'8:00', title:'Morning briefing delivered', detail:'3 decisions · 2 at-risk projects · 1 escalation', tone:'info' },
+    ],
+  });
+  let state = initial();
+  const subs = new Set();
+  const emit = () => subs.forEach(f => f());
+  return {
+    get: () => state,
+    resolve(key, info = {}) {
+      if (!DECISIONS[key] || state.resolved[key]) return;
+      const ev = { ...DECISIONS[key].event, ...(info.eventOverride||{}) };
+      state = { ...state, resolved:{ ...state.resolved, [key]:info }, timeline:[ ...state.timeline, ev ] };
+      emit();
+    },
+    reset() { state = initial(); emit(); },
+    score() {
+      const pts = Object.keys(state.resolved).reduce((s,k)=> s + (DECISIONS[k]?.points||0), 0);
+      return Math.min(100, BASE_SCORE + pts);
+    },
+    cleared() { return DECISION_KEYS.every(k => state.resolved[k]); },
+    countResolved() { return DECISION_KEYS.filter(k => state.resolved[k]).length; },
+    phase() {
+      const n = this.countResolved();
+      return n >= 4 ? 'clear' : n >= 2 ? 'midday' : 'morning';
+    },
+  };
+})();
+
+function useStore() {
+  const [, force] = React.useState(0);
+  React.useEffect(() => {
+    const f = () => force(x => x + 1);
+    const set = (Store.__set || (Store.__set = new Set()));
+    set.add(f);
+    return () => set.delete(f);
+  }, []);
+  return Store.get();
+}
+// wire mutations to notify subscribers
+(function(){
+  const origResolve = Store.resolve.bind(Store);
+  const origReset = Store.reset.bind(Store);
+  const fire = () => (Store.__set || new Set()).forEach(f => f());
+  Store.resolve = (...a) => { origResolve(...a); fire(); };
+  Store.reset = (...a) => { origReset(...a); fire(); };
+})();
+
+// ── Attention Score ring
+function AttentionRing({ score, size=78, stroke=7 }) {
+  const r=(size-stroke)/2, c=2*Math.PI*r, off=c*(1-score/100);
+  const col = score>=90 ? D.sage : score>=75 ? D.teal : score>=65 ? D.ochre : D.clay;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--d-surface-3)" strokeWidth={stroke} />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={col} strokeWidth={stroke} strokeLinecap="round"
+        strokeDasharray={c} strokeDashoffset={off} transform={`rotate(-90 ${size/2} ${size/2})`} />
+      <text x="50%" y="49%" textAnchor="middle" dominantBaseline="middle" style={{ fontFamily:'var(--mono)', fontSize:size*0.3, fontWeight:600, fill:'var(--d-ink)' }} className="tnum">{score}</text>
+      <text x="50%" y="68%" textAnchor="middle" dominantBaseline="middle" style={{ fontFamily:'var(--mono)', fontSize:size*0.12, fill:'var(--d-ink-3)', letterSpacing:0.5 }}>/100</text>
+    </svg>
+  );
+}
+
+// ── Swipe-to-act card
+function SwipeCard({ onRight, onLeft, onLong, rightLabel='Approve', leftLabel='Clarify', rightColor=D.sage, leftColor=D.ochre, children, radius=16 }) {
+  const [dx, setDx] = React.useState(0);
+  const [gone, setGone] = React.useState(0);
+  const ref = React.useRef({ down:false, x0:0, moved:false, t:null });
+  const TH = 88;
+  const down = (e) => {
+    const x = e.clientX ?? (e.touches && e.touches[0].clientX);
+    ref.current = { down:true, x0:x, moved:false, dx:0, t:setTimeout(()=>{ if(!ref.current.moved){ ref.current.down=false; onLong && onLong(); } }, 550) };
+  };
+  const move = (e) => {
+    if (!ref.current.down) return;
+    const x = e.clientX ?? (e.touches && e.touches[0].clientX);
+    const d = x - ref.current.x0;
+    if (Math.abs(d) > 5) { ref.current.moved = true; clearTimeout(ref.current.t); }
+    ref.current.dx = d;
+    setDx(d);
+  };
+  const up = () => {
+    const wasDown = ref.current.down;
+    const d = ref.current.dx || 0;
+    ref.current.down = false; clearTimeout(ref.current.t);
+    if (!wasDown) return;
+    if (d > TH) { setGone(1); setTimeout(()=> onRight && onRight(), 200); }
+    else if (d < -TH) { setGone(-1); setTimeout(()=> onLeft && onLeft(), 200); }
+    else setDx(0);
+  };
+  const reveal = dx > 4 ? 'right' : dx < -4 ? 'left' : null;
+  const tx = gone ? gone*420 : dx;
+  return (
+    <div style={{ position:'relative', borderRadius:radius, overflow:'hidden' }}>
+      <div style={{ position:'absolute', inset:0, display:'flex', alignItems:'center', justifyContent: reveal==='right'?'flex-start':'flex-end', padding:'0 18px',
+        background: reveal==='right' ? 'color-mix(in oklab, '+rightColor+' 22%, var(--d-bg))' : reveal==='left' ? 'color-mix(in oklab, '+leftColor+' 22%, var(--d-bg))' : 'var(--d-bg)' }}>
+        {reveal && <span style={{ ...D.mono, fontSize:11, fontWeight:600, letterSpacing:0.8, textTransform:'uppercase', color: reveal==='right'?rightColor:leftColor, display:'flex', alignItems:'center', gap:7 }}>
+          {reveal==='right' ? <><I.check size={16}/>{rightLabel}</> : <>{leftLabel}<I.chevR size={16}/></>}
+        </span>}
+      </div>
+      <div onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerLeave={up}
+        style={{ position:'relative', transform:`translateX(${tx}px)`, transition: ref.current.down?'none':'transform .26s cubic-bezier(.22,.61,.36,1)', opacity: gone?0:1, touchAction:'pan-y', cursor:'grab' }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ── Timeline view (Attention → Decision → Execution → Outcome)
+function TimelineView() {
+  const s = useStore();
+  const tone = { info:D.ink3, ok:D.sage, risk:D.clay };
+  const score = Store.score();
+  return (
+    <Screen eyebrow="Today" title="Mission log"
+      trailing={<span style={{ ...D.mono, fontSize:11, color: score>=90?D.sage:D.teal }}>{score}/100</span>}>
+      <div style={{ padding:'16px 18px 4px' }}>
+        <div style={{ display:'flex', gap:8, padding:'12px 14px', background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)' }}>
+          <span style={{ color:D.teal, marginTop:1 }}><I.spark size={15} /></span>
+          <span style={{ fontSize:13, color:D.ink2, lineHeight:1.4 }}>
+            {Store.cleared()
+              ? <>You cleared every critical item today. <b style={{ color:D.ink }}>Launch risk reduced from High to Medium.</b></>
+              : <>{Store.countResolved()} of 4 decisions handled. I’m tracking the rest and will resurface them.</>}
+          </span>
+        </div>
+      </div>
+      <div style={{ padding:'20px 18px 28px' }}>
+        {s.timeline.map((e,i)=>(
+          <div key={i} style={{ display:'flex', gap:13 }}>
+            <div style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
+              <span className="tnum" style={{ ...D.mono, fontSize:10.5, color:D.ink3, marginBottom:6, width:34, textAlign:'right' }}>{e.time}</span>
+              <div style={{ width:11, height:11, borderRadius:99, background:tone[e.tone]||D.ink3, border:'2px solid var(--d-bg)', boxShadow:'0 0 0 1px '+(tone[e.tone]||D.ink3), flexShrink:0 }} />
+              {i<s.timeline.length-1 && <div style={{ width:2, flex:1, minHeight:26, background:D.line, margin:'3px 0' }} />}
+            </div>
+            <div style={{ paddingBottom:20, marginTop:-2, flex:1 }}>
+              <div style={{ fontSize:14, fontWeight:550, color:D.ink }}>{e.title}</div>
+              <div style={{ fontSize:12.5, color:D.ink3, marginTop:2, lineHeight:1.4 }}>{e.detail}</div>
+            </div>
+          </div>
+        ))}
+        {!Store.cleared() && <div style={{ ...D.mono, fontSize:11, color:D.ink3, textAlign:'center', paddingTop:4 }}>· tracking {4-Store.countResolved()} open item{4-Store.countResolved()===1?'':'s'} ·</div>}
+      </div>
+    </Screen>
+  );
+}
+
+Object.assign(window, { Store, useStore, DECISIONS, DECISION_KEYS, AttentionRing, SwipeCard, TimelineView });
+
+</script>
+<script type="text/babel">
+/* ===== proto-approval.jsx (inlined) ===== */
+/* FLOW 1 — Approval Intelligence
+   Queue list + decision detail: request, amount, policy, recommendation, risk,
+   impact, budget, document. Actions: Approve / Reject / Clarify / Delegate,
+   with explicit confirmation for exceptions, ERP write-back + audit log. */
+
+const POL_D = {
+  within:{ c:'var(--d-sage)', label:'Within policy' },
+  exception:{ c:'var(--d-clay)', label:'Policy exception' },
+  flag:{ c:'var(--d-ochre)', label:'Needs clarity' },
+  decision:{ c:'#8E93D6', label:'Your decision' },
+};
+
+function ApprovalList() {
+  const E = window.EMMA;
+  return (
+    <Screen eyebrow="Approval queue" title="Approvals" trailing={<span style={{ ...D.mono, fontSize:11, color:D.ink3 }}>12</span>}>
+      <div style={{ padding:'14px 18px 8px' }}>
+        <div style={{ display:'flex', gap:8, padding:'12px 14px', background:'color-mix(in oklab, var(--d-clay) 12%, transparent)', border:'1px solid color-mix(in oklab, var(--d-clay) 30%, transparent)', borderRadius:'var(--r-md)' }}>
+          <span style={{ color:D.clay, marginTop:1 }}><I.spark size={15} /></span>
+          <span style={{ fontSize:13, color:D.ink2, lineHeight:1.4 }}>11 of 12 are within policy. <b style={{ color:D.ink }}>One exceeds your $100K limit</b> and needs you — I’ve put it first.</span>
+        </div>
+      </div>
+      <Block label="Needs your decision" pad>
+        {E.approvals.filter(a=>a.policy!=='within').map((a,i,arr)=><ApprovalRow key={a.id} a={a} last={i===arr.length-1} />)}
+      </Block>
+      <Block label="Recommended: approve" pad right={<span style={{ ...D.mono, fontSize:10, color:D.sage }}>WITHIN POLICY</span>}>
+        {E.approvals.filter(a=>a.policy==='within').map((a,i,arr)=><ApprovalRow key={a.id} a={a} last={i===arr.length-1} />)}
+      </Block>
+      <div style={{ height:24 }} />
+    </Screen>
+  );
+}
+
+function ApprovalRow({ a, last }) {
+  const p = POL_D[a.policy];
+  return (
+    <div onClick={()=>nav().go('approvalDetail',{ id:a.id })} style={{ display:'flex', alignItems:'center', gap:12, padding:'13px 15px', borderBottom: last?'none':'1px solid '+D.line, cursor:'pointer' }}>
+      <Dot color={p.c} size={8} />
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ fontSize:14, fontWeight:500, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{a.vendor}</div>
+        <div style={{ fontSize:11.5, color:D.ink3, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{a.purpose}</div>
+      </div>
+      <div style={{ textAlign:'right' }}>
+        {a.amount>0 && <div className="tnum" style={{ ...D.mono, fontSize:13.5, fontWeight:600 }}>{money(a.amount)}</div>}
+        <div style={{ ...D.mono, fontSize:9.5, color:p.c, letterSpacing:0.4 }}>{a.rec.toUpperCase()}</div>
+      </div>
+    </div>
+  );
+}
+
+function ApprovalDetail({ id }) {
+  const E = window.EMMA;
+  const a = E.approvals.find(x=>x.id===id);
+  const det = E.approvalDetail[id] || { risk:[], budget:null };
+  const p = POL_D[a.policy];
+  const [done, setDone] = React.useState(null);     // 'approved'|'rejected'|'clarified'|'delegated'
+  const [pending, setPending] = React.useState(null);
+  const isException = a.policy==='exception';
+
+  const act = (kind) => {
+    if ((kind==='approved' && isException)) { setPending(kind); return; }
+    setDone(kind);
+  };
+  const confirm = () => { setDone(pending); setPending(null); };
+
+  if (done) return <ApprovalResult a={a} kind={done} />;
+
+  const sevLabel = { high:'High', med:'Medium', low:'Low' };
+
+  return (
+    <Screen eyebrow={`Approval · ${a.cat}`} title={a.vendor}
+      footer={
+        <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
+          <div style={{ display:'flex', gap:9 }}>
+            <Btn label="Approve" kind="primary" icon={<I.check size={15} />} onClick={()=>act('approved')} />
+            <Btn label="Reject" kind="danger" icon={<I.x size={15} />} onClick={()=>act('rejected')} />
+          </div>
+          <div style={{ display:'flex', gap:9 }}>
+            <Btn label="Clarify" kind="ghost" small onClick={()=>act('clarified')} />
+            <Btn label="Delegate" kind="ghost" small onClick={()=>act('delegated')} />
+          </div>
+        </div>
+      }>
+      {/* amount header */}
+      <div style={{ padding:'20px 18px 4px', textAlign:'center' }}>
+        {a.amount>0
+          ? <div className="tnum" style={{ ...D.mono, fontSize:42, fontWeight:600, letterSpacing:-1 }}>{money(a.amount)}</div>
+          : <div style={{ ...D.mono, fontSize:24, fontWeight:600, color:D.iris }}>DECISION</div>}
+        <div style={{ fontSize:13.5, color:D.ink2, marginTop:6 }}>{a.purpose}</div>
+        <div style={{ display:'inline-flex', alignItems:'center', gap:6, marginTop:12, padding:'5px 11px', borderRadius:99, background:'color-mix(in oklab, '+p.c+' 14%, transparent)', border:'1px solid color-mix(in oklab, '+p.c+' 32%, transparent)' }}>
+          <Dot color={p.c} size={6} /><span style={{ ...D.mono, fontSize:10.5, fontWeight:600, letterSpacing:0.6, color:p.c, textTransform:'uppercase' }}>{p.label}</span>
+        </div>
+      </div>
+
+      {/* AI recommendation */}
+      <Block label="Recommendation">
+        <div style={{ padding:'14px 15px' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+            <span style={{ color:D.teal }}><I.spark size={16} /></span>
+            <span style={{ fontSize:15, fontWeight:600 }}>{a.rec}{isException?' — get your sign-off':''}</span>
+          </div>
+          <div style={{ fontSize:13, color:D.ink2, lineHeight:1.45 }}>{a.reason}</div>
+        </div>
+      </Block>
+
+      {/* risk */}
+      {det.risk && det.risk.length>0 &&
+        <Block label="Risk">
+          {det.risk.map((r,i,arr)=>(
+            <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:10, padding:'12px 15px', borderBottom: i===arr.length-1?'none':'1px solid '+D.line }}>
+              <span style={{ marginTop:1, color:SEV[r.sev] }}><I.alert size={15} /></span>
+              <span style={{ flex:1, fontSize:13, color:D.ink, lineHeight:1.4 }}>{r.t}</span>
+              <span style={{ ...D.mono, fontSize:9.5, fontWeight:600, color:SEV[r.sev], marginTop:2 }}>{sevLabel[r.sev].toUpperCase()}</span>
+            </div>
+          ))}
+        </Block>}
+
+      {/* impact + budget */}
+      {det.impact &&
+        <Block label="Impact">
+          <div style={{ padding:'14px 15px' }}>
+            <div style={{ fontSize:13, color:D.ink2, lineHeight:1.45 }}>{det.impact}</div>
+            {det.budget && <div style={{ marginTop:14 }}>
+              <div style={{ display:'flex', justifyContent:'space-between', fontSize:11.5, color:D.ink3, marginBottom:6 }}>
+                <span>{det.budget.line}</span><span>{det.budget.of}</span>
+              </div>
+              <div style={{ height:6, borderRadius:99, background:D.s3, overflow:'hidden' }}>
+                <div style={{ width:det.budget.used+'%', height:'100%', borderRadius:99, background: det.budget.used>85?D.clay:D.teal }} />
+              </div>
+            </div>}
+          </div>
+        </Block>}
+
+      {/* request meta */}
+      <Block label="Request">
+        <Row label="Requester" value={a.requester} />
+        <Row label="Category" value={a.cat} />
+        {det.doc!==undefined && <Row label="Document" value={det.doc ? <span style={{ display:'inline-flex', alignItems:'center', gap:6, color:D.teal }}><I.doc size={14} />{det.doc}</span> : 'Missing'} valColor={det.doc?D.teal:D.clay} />}
+        {det.history && <Row label="History" value={det.history} last />}
+      </Block>
+
+      {det.similar &&
+        <div style={{ padding:'14px 18px 4px' }}>
+          <div style={{ display:'flex', gap:8, padding:'11px 13px', background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)' }}>
+            <span style={{ color:D.ink3, marginTop:1 }}><I.clock size={14} /></span>
+            <span style={{ fontSize:12, color:D.ink2, lineHeight:1.4 }}>{det.similar}</span>
+          </div>
+        </div>}
+
+      {/* verbal approval affordance */}
+      <div style={{ display:'flex', alignItems:'center', gap:11, margin:'16px 18px 22px', padding:'12px 14px', border:'1px dashed '+D.line, borderRadius:'var(--r-md)' }}>
+        <div style={{ width:36, height:36, borderRadius:99, background:D.s3, color:D.teal, display:'flex', alignItems:'center', justifyContent:'center' }}><I.mic size={17} /></div>
+        <div style={{ flex:1 }}><div style={{ fontSize:13, fontWeight:500 }}>Approve by voice</div><div style={{ fontSize:11.5, color:D.ink3 }}>Transcript + identity logged to audit</div></div>
+      </div>
+
+      <Sheet open={!!pending} onClose={()=>setPending(null)}>
+        <div style={{ textAlign:'center', marginBottom:4 }}>
+          <div style={{ color:D.clay, marginBottom:10 }}><I.shield size={30} /></div>
+          <div style={{ fontSize:18, fontWeight:600, marginBottom:8 }}>Confirm override</div>
+          <div style={{ fontSize:13.5, color:D.ink2, lineHeight:1.45, marginBottom:18 }}>
+            This {money(a.amount)} request <b style={{ color:D.ink }}>exceeds your $100K limit</b>. Approving it records an explicit policy override under your name.
+          </div>
+        </div>
+        <div style={{ display:'flex', gap:9 }}>
+          <Btn label="Cancel" kind="ghost" onClick={()=>setPending(null)} />
+          <Btn label="Override & approve" kind="primary" onClick={confirm} />
+        </div>
+      </Sheet>
+    </Screen>
+  );
+}
+
+function ApprovalResult({ a, kind }) {
+  React.useEffect(() => {
+    const key = a.id==='a3' ? 'snowflake' : a.id==='a6' ? 'hiring' : null;
+    if (!key) return;
+    const over = kind==='approved' ? undefined : {
+      ...window.DECISIONS[key].event,
+      title: kind==='rejected' ? a.vendor+' rejected' : kind==='clarified' ? 'Clarification requested — '+a.vendor : a.vendor+' delegated to Finance',
+      detail: kind==='clarified' ? 'Awaiting requester response' : kind==='rejected' ? 'Requester notified · logged to audit' : 'Routed with your recommendation',
+      tone: kind==='rejected' ? 'risk' : 'info',
+    };
+    window.Store.resolve(key, { action:kind, eventOverride:over });
+  }, []);
+  const labels = {
+    approved:{ c:D.sage, title:'Approved', line:'Decision written back to Odoo. Requester notified.' },
+    rejected:{ c:D.clay, title:'Rejected', line:'Requester notified with your note. Logged to audit.' },
+    clarified:{ c:D.ochre, title:'Clarification requested', line:'I’ve asked '+a.requester+' for the missing detail and will resurface it.' },
+    delegated:{ c:D.iris, title:'Delegated', line:'Routed to Finance with your recommendation attached.' },
+  }[kind];
+  return (
+    <Screen eyebrow={`Approval · ${a.cat}`} title={a.vendor} footer={
+      <div style={{ display:'flex', gap:9 }}>
+        <Btn label="Back to cockpit" kind="soft" onClick={()=>nav().reset()} />
+        <Btn label="Next decision" kind="primary" icon={<I.chevR size={15} />} onClick={()=>nav().go('approvalDetail',{ id:'a6' })} />
+      </div>
+    }>
+      <div style={{ padding:'46px 26px', textAlign:'center' }}>
+        <SuccessCheck color={labels.c} />
+        <div style={{ fontSize:22, fontWeight:600, letterSpacing:-0.3 }}>{labels.title}</div>
+        {a.amount>0 && <div className="tnum" style={{ ...D.mono, fontSize:14, color:D.ink2, marginTop:6 }}>{money(a.amount)} · {a.vendor}</div>}
+        <div style={{ fontSize:14, color:D.ink2, lineHeight:1.5, marginTop:16, maxWidth:300, marginLeft:'auto', marginRight:'auto' }}>{labels.line}</div>
+        <div style={{ display:'inline-flex', alignItems:'center', gap:7, marginTop:22, padding:'8px 13px', borderRadius:99, background:D.surface, border:'1px solid '+D.line }}>
+          <Dot color={D.sage} size={6} /><span style={{ ...D.mono, fontSize:10.5, color:D.ink3, letterSpacing:0.5 }}>AUDIT LOGGED · {new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>
+        </div>
+      </div>
+    </Screen>
+  );
+}
+
+Object.assign(window, { ApprovalList, ApprovalDetail });
+
+</script>
+<script type="text/babel">
+/* ===== proto-minutes.jsx (inlined) ===== */
+/* FLOW 2 — Meeting Minutes → Action Allocation
+   Transcript → AI minutes (summary, decisions, actions w/ owners, due, target
+   system) → review → allocate to monday.com / Odoo → the execution loop. */
+
+function initials(name){ return name.split(' ').map(w=>w[0]).slice(0,2).join(''); }
+const PRI = { high:'var(--d-clay)', med:'var(--d-ochre)', low:'var(--d-sage)' };
+
+function MinutesDetail() {
+  const E = window.EMMA, m = E.minutes;
+  const [items, setItems] = React.useState(m.actions.map(a=>({ ...a, include:true })));
+  const [allocated, setAllocated] = React.useState(false);
+  const count = items.filter(i=>i.include).length;
+  const toggle = (id)=> setItems(s=>s.map(i=>i.id===id?{...i,include:!i.include}:i));
+
+  if (allocated) return <AllocationResult count={count} />;
+
+  return (
+    <Screen eyebrow="Meeting intelligence" title={m.title}
+      footer={<Btn label={`Allocate ${count} action${count===1?'':'s'}`} kind="primary" icon={<I.route size={16} />} onClick={()=>setAllocated(true)} />}>
+      {/* meta */}
+      <div style={{ display:'flex', gap:16, padding:'16px 18px 4px', color:D.ink3, ...D.mono, fontSize:11.5 }}>
+        <span style={{ display:'flex', alignItems:'center', gap:6 }}><I.calendar size={14} />{m.date}</span>
+        <span style={{ display:'flex', alignItems:'center', gap:6 }}><I.clock size={14} />{m.dur}</span>
+        <span style={{ display:'flex', alignItems:'center', gap:6 }}><I.users size={14} />{m.attendees}</span>
+      </div>
+
+      {/* source chip */}
+      <div style={{ padding:'12px 18px 0' }}>
+        <div style={{ display:'inline-flex', alignItems:'center', gap:7, padding:'6px 11px', borderRadius:99, background:D.surface, border:'1px solid '+D.line, ...D.mono, fontSize:10.5, color:D.ink3 }}>
+          <Dot color={D.sage} size={6} /> TRANSCRIPT CAPTURED · CONSENT ON FILE
+        </div>
+      </div>
+
+      {/* summary */}
+      <Block label="AI summary">
+        <div style={{ padding:'14px 15px', display:'flex', gap:9 }}>
+          <span style={{ color:D.teal, marginTop:1, flexShrink:0 }}><I.spark size={16} /></span>
+          <span style={{ fontSize:13.5, color:D.ink2, lineHeight:1.5 }}>{m.summary}</span>
+        </div>
+      </Block>
+
+      {/* decisions */}
+      <Block label="Decisions">
+        {m.decisions.map((d,i,arr)=>(
+          <div key={i} style={{ display:'flex', gap:11, padding:'13px 15px', borderBottom:i===arr.length-1?'none':'1px solid '+D.line }}>
+            <span style={{ color:D.sage, marginTop:1, flexShrink:0 }}><I.checkCircle size={16} /></span>
+            <span style={{ fontSize:13.5, color:D.ink, lineHeight:1.4 }}>{d}</span>
+          </div>
+        ))}
+      </Block>
+
+      {/* actions — reviewable */}
+      <Block label="Action items" right={<span style={{ ...D.mono, fontSize:10, color:D.ochre }}>REVIEW BEFORE ALLOCATION</span>}>
+        {items.map((a,i,arr)=>(
+          <div key={a.id} style={{ padding:'13px 15px', borderBottom:i===arr.length-1?'none':'1px solid '+D.line, opacity:a.include?1:0.45, transition:'opacity .2s' }}>
+            <div style={{ display:'flex', alignItems:'flex-start', gap:11 }}>
+              <button onClick={()=>toggle(a.id)} style={{ width:22, height:22, borderRadius:7, flexShrink:0, marginTop:1, cursor:'pointer', border:'1.5px solid '+(a.include?D.teal:D.ink3), background:a.include?D.teal:'transparent', color:'#06181B', display:'flex', alignItems:'center', justifyContent:'center', padding:0 }}>
+                {a.include && <I.check size={14} sw={2.4} />}
+              </button>
+              <div style={{ flex:1 }}>
+                <div style={{ display:'flex', alignItems:'center', gap:7, marginBottom:6 }}>
+                  <Pill color={PRI[a.priority]}>{a.priority}</Pill>
+                  {!a.confirmed && <span style={{ ...D.mono, fontSize:9.5, color:D.ochre, letterSpacing:0.4 }}>· NEEDS OWNER CONFIRM</span>}
+                </div>
+                <div style={{ fontSize:13.5, color:D.ink, lineHeight:1.4 }}>{a.text}</div>
+                <div style={{ display:'flex', alignItems:'center', gap:10, marginTop:9, flexWrap:'wrap' }}>
+                  <span style={{ display:'flex', alignItems:'center', gap:6 }}>
+                    <span style={{ width:20, height:20, borderRadius:99, background:D.s3, color:D.ink2, fontSize:9, fontWeight:600, display:'flex', alignItems:'center', justifyContent:'center' }}>{initials(a.owner)}</span>
+                    <span style={{ fontSize:12, color:D.ink2 }}>{a.owner}</span>
+                  </span>
+                  <span style={{ ...D.mono, fontSize:11, color: a.due==='Today'?D.clay:D.ink3 }}>{a.due}</span>
+                  <span style={{ marginLeft:'auto', ...D.mono, fontSize:10, color:D.ink2, background:D.s3, padding:'3px 8px', borderRadius:6 }}>{a.system}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </Block>
+      <div style={{ height:16 }} />
+    </Screen>
+  );
+}
+
+// The execution loop — the heart of the investor story
+function Loop({ active }) {
+  const steps = [
+    { k:'Meeting', icon:<I.mic size={15} />, state:'done' },
+    { k:'Decisions', icon:<I.checkCircle size={15} />, state:'done' },
+    { k:'Actions', icon:<I.route size={15} />, state:'active' },
+    { k:'Execution', icon:<I.bolt size={15} />, state:'next' },
+    { k:'Follow-up', icon:<I.clock size={15} />, state:'next' },
+  ];
+  const col = { done:D.sage, active:D.teal, next:D.ink3 };
+  return (
+    <div style={{ padding:'4px 6px' }}>
+      {steps.map((s,i)=>(
+        <div key={s.k} style={{ display:'flex', gap:13 }}>
+          <div style={{ display:'flex', flexDirection:'column', alignItems:'center' }}>
+            <div style={{ width:34, height:34, borderRadius:99, flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center',
+              background: s.state==='next'?'transparent':'color-mix(in oklab, '+col[s.state]+' 16%, transparent)',
+              border:'1.5px solid '+(s.state==='next'?D.line:col[s.state]), color:col[s.state],
+              animation: s.state==='active'?'pulseRing 2.6s ease-out infinite':'none' }}>{s.icon}</div>
+            {i<steps.length-1 && <div style={{ width:2, flex:1, minHeight:18, background: s.state==='done'?D.sage:D.line, margin:'3px 0' }} />}
+          </div>
+          <div style={{ paddingBottom:16, paddingTop:6 }}>
+            <div style={{ fontSize:14, fontWeight:550, color: s.state==='next'?D.ink3:D.ink }}>{s.k}</div>
+            <div style={{ fontSize:11.5, color:D.ink3, marginTop:1 }}>
+              {s.k==='Meeting' && 'Captured Fri · transcript on file'}
+              {s.k==='Decisions' && '2 decisions extracted'}
+              {s.k==='Actions' && 'Just created in monday.com & Odoo'}
+              {s.k==='Execution' && 'Owners notified · tracking begins'}
+              {s.k==='Follow-up' && 'Surfaces in tomorrow’s briefing & risk report'}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function AllocationResult({ count }) {
+  return (
+    <Screen eyebrow="Meeting intelligence" title="Actions allocated" footer={
+      <div style={{ display:'flex', gap:9 }}>
+        <Btn label="Back to cockpit" kind="soft" onClick={()=>nav().reset()} />
+        <Btn label="View in monday.com" kind="primary" icon={<I.arrowUR size={15} />} />
+      </div>
+    }>
+      <div style={{ padding:'34px 26px 8px', textAlign:'center' }}>
+        <SuccessCheck color={D.teal} />
+        <div style={{ fontSize:21, fontWeight:600, letterSpacing:-0.3 }}>{count} actions created</div>
+        <div style={{ fontSize:13.5, color:D.ink2, lineHeight:1.5, marginTop:10, maxWidth:300, margin:'10px auto 0' }}>
+          Owners assigned, due dates set, and tasks pushed to monday.com and Odoo. The loop from meeting to follow-up is now closed.
+        </div>
+      </div>
+      <Block label="The loop, closed">
+        <div style={{ padding:'14px 14px 2px' }}><Loop active={2} /></div>
+      </Block>
+      <div style={{ padding:'14px 18px 22px' }}>
+        <div style={{ display:'flex', gap:8, padding:'12px 14px', background:'color-mix(in oklab, var(--d-ochre) 12%, transparent)', border:'1px solid color-mix(in oklab, var(--d-ochre) 28%, transparent)', borderRadius:'var(--r-md)' }}>
+          <span style={{ color:D.ochre, marginTop:1 }}><I.alert size={15} /></span>
+          <span style={{ fontSize:12.5, color:D.ink2, lineHeight:1.4 }}>I’ll watch the unowned <b style={{ color:D.ink }}>auth ship-blocker</b> — if Sarah doesn’t confirm by Jun 2, it escalates to your risk report.</span>
+        </div>
+      </div>
+    </Screen>
+  );
+}
+
+Object.assign(window, { MinutesDetail });
+
+</script>
+<script type="text/babel">
+/* ===== proto-team.jsx (inlined) ===== */
+/* FLOW 3 — Team Risk Intelligence
+   The differentiator: not "task overdue" but "stated plan ≠ assigned priorities →
+   launch risk rising." Radar list → person detail with plan-vs-assigned + insight. */
+
+function TeamList() {
+  const E = window.EMMA;
+  const groups = [
+    ['Needs attention', E.team.filter(t=>t.status==='at-risk'||t.status==='watch')],
+    ['No check-in', E.team.filter(t=>t.status==='pending')],
+    ['On track', E.team.filter(t=>t.status==='on-track')],
+  ];
+  return (
+    <Screen eyebrow="Team risk" title="Risk radar"
+      trailing={<span style={{ ...D.mono, fontSize:11, color:D.ink3 }}>{E.summary.checkins.responded}/{E.summary.checkins.total}</span>}>
+      <div style={{ padding:'14px 18px 4px' }}>
+        <div style={{ display:'flex', gap:8, padding:'12px 14px', background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)' }}>
+          <span style={{ color:D.teal, marginTop:1 }}><I.spark size={15} /></span>
+          <span style={{ fontSize:13, color:D.ink2, lineHeight:1.4 }}>Two people are off-plan and two missed today’s check-in. <b style={{ color:D.ink }}>Mobile Relaunch</b> is the project most at risk.</span>
+        </div>
+      </div>
+      {groups.map(([label, list]) => list.length>0 && (
+        <Block key={label} label={label}>
+          {list.map((t,i)=><TeamRow key={t.id} t={t} last={i===list.length-1} />)}
+        </Block>
+      ))}
+      <div style={{ height:24 }} />
+    </Screen>
+  );
+}
+
+function TeamRow({ t, last }) {
+  const c = { 'at-risk':D.clay,'watch':D.ochre,'on-track':D.sage,'pending':D.ink3 }[t.status];
+  return (
+    <div onClick={()=>nav().go('teamDetail',{ id:t.id })} style={{ display:'flex', alignItems:'center', gap:12, padding:'13px 15px', borderBottom:last?'none':'1px solid '+D.line, cursor:'pointer' }}>
+      <div style={{ width:34, height:34, borderRadius:99, background:D.s3, color:D.ink2, fontSize:11.5, fontWeight:600, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{initials(t.name)}</div>
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ fontSize:14, fontWeight:500 }}>{t.name} <span style={{ color:D.ink3, fontWeight:400, fontSize:12.5 }}>· {t.project}</span></div>
+        <div style={{ fontSize:12, color:t.status==='on-track'?D.ink3:c, marginTop:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{t.signal}</div>
+      </div>
+      <Dot color={c} size={8} />
+      <I.chevR size={15} style={{ color:D.ink3 }} />
+    </div>
+  );
+}
+
+function TeamDetail({ id }) {
+  const E = window.EMMA;
+  const t = E.team.find(x=>x.id===id);
+  const det = E.teamDetail[id];
+  const c = { 'at-risk':D.clay,'watch':D.ochre,'on-track':D.sage,'pending':D.ink3 }[t.status];
+  const [done, setDone] = React.useState(null);
+  React.useEffect(() => {
+    if (done && id==='t1') window.Store.resolve('sarah', {
+      action: done,
+      eventOverride: done==='escalated' ? { ...window.DECISIONS.sarah.event, title:'Mobile Relaunch escalated', detail:'Flagged to the steering group', tone:'risk' } : undefined,
+    });
+  }, [done]);
+
+  const ST = { unowned:{c:D.clay,l:'Unowned'}, blocked:{c:D.clay,l:'Blocked'}, 'in-progress':{c:D.sage,l:'In progress'}, 'not-started':{c:D.ochre,l:'Not started'} };
+
+  return (
+    <Screen eyebrow={`${t.role} · ${t.project}`} title={t.name}
+      footer={ det ?
+        <div style={{ display:'flex', gap:9 }}>
+          <Btn label={t.status==='pending'?'Nudge':'Escalate'} kind="ghost" small onClick={()=>setDone('escalated')} />
+          <Btn label="Raise in 1:1" kind="primary" icon={<I.send size={15} />} onClick={()=>setDone('raised')} />
+        </div> : <Btn label="Message" kind="soft" icon={<I.send size={15} />} onClick={()=>setDone('messaged')} /> }>
+
+      {/* person header + launch risk */}
+      <div style={{ display:'flex', alignItems:'center', gap:14, padding:'18px 18px 4px' }}>
+        <div style={{ width:52, height:52, borderRadius:99, background:D.s3, color:D.ink, fontSize:17, fontWeight:600, display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 }}>{initials(t.name)}</div>
+        <div style={{ flex:1 }}>
+          <div style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'4px 10px', borderRadius:99, background:'color-mix(in oklab, '+c+' 14%, transparent)', border:'1px solid color-mix(in oklab, '+c+' 30%, transparent)' }}>
+            <Dot color={c} size={6} /><span style={{ ...D.mono, fontSize:10, fontWeight:600, color:c, letterSpacing:0.5, textTransform:'uppercase' }}>{STATUS[t.status].label}</span>
+          </div>
+        </div>
+        {det && <div style={{ textAlign:'right' }}>
+          <div className="tnum" style={{ ...D.mono, fontSize:26, fontWeight:600, color:c, lineHeight:1 }}>{det.launchRisk}%</div>
+          <div style={{ ...D.mono, fontSize:9.5, color:D.ink3, letterSpacing:0.4 }}>LAUNCH RISK {det.trend==='up'?'↑':det.trend==='down'?'↓':'→'}</div>
+        </div>}
+      </div>
+
+      {!det && <div style={{ padding:'20px', textAlign:'center', color:D.ink3, fontSize:13.5 }}>{t.detail||'On plan. No risks detected.'}</div>}
+
+      {det && <>
+        {/* plan vs assigned — the differentiated view */}
+        <div style={{ padding:'18px 18px 0' }}>
+          <div style={{ ...D.mono, fontSize:10, fontWeight:600, letterSpacing:1.4, textTransform:'uppercase', color:D.ink3, marginBottom:10 }}>Plan vs assigned</div>
+          <div style={{ background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)', padding:'13px 15px', marginBottom:10 }}>
+            <div style={{ ...D.mono, fontSize:9.5, color:D.ink3, letterSpacing:0.6, marginBottom:6 }}>STATED PLAN — TODAY’S CHECK-IN</div>
+            <div style={{ fontSize:13.5, color:D.ink, lineHeight:1.45 }}>“{det.stated}”</div>
+          </div>
+          <div style={{ background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)', overflow:'hidden' }}>
+            <div style={{ ...D.mono, fontSize:9.5, color:D.ink3, letterSpacing:0.6, padding:'11px 15px 4px' }}>ASSIGNED PRIORITIES</div>
+            {det.assigned.map((a,i)=>(
+              <div key={i} style={{ display:'flex', alignItems:'center', gap:11, padding:'11px 15px', borderTop:'1px solid '+D.line }}>
+                <Pill color={a.priority==='P0'?D.clay:a.priority==='P1'?D.ochre:D.ink3}>{a.priority}</Pill>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:13, color:D.ink, fontWeight:450 }}>{a.task}</div>
+                  <div style={{ fontSize:11.5, color:D.ink3, marginTop:1 }}>{a.note}</div>
+                </div>
+                <span style={{ ...D.mono, fontSize:9.5, fontWeight:600, color:ST[a.status].c, letterSpacing:0.3 }}>{ST[a.status].l.toUpperCase()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* the insight */}
+        <Block label="Why this is a risk">
+          <div style={{ padding:'14px 15px', display:'flex', gap:9 }}>
+            <span style={{ color:c, marginTop:1, flexShrink:0 }}><I.spark size={16} /></span>
+            <span style={{ fontSize:13.5, color:D.ink, lineHeight:1.5 }}>{det.insight}</span>
+          </div>
+        </Block>
+
+        {/* suggested actions */}
+        <div style={{ padding:'18px' }}>
+          <div style={{ ...D.mono, fontSize:10, fontWeight:600, letterSpacing:1.4, textTransform:'uppercase', color:D.ink3, marginBottom:10 }}>Suggested</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+            {det.suggest.map((s,i)=>(
+              <div key={i} style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)', cursor:'pointer' }}>
+                <span style={{ color:D.teal }}><I.bolt size={15} /></span>
+                <span style={{ flex:1, fontSize:13, color:D.ink }}>{s}</span>
+                <I.chevR size={14} style={{ color:D.ink3 }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </>}
+
+      <Sheet open={!!done} onClose={()=>nav().back()}>
+        <div style={{ textAlign:'center' }}>
+          <SuccessCheck color={D.teal} />
+          <div style={{ fontSize:18, fontWeight:600, marginBottom:8 }}>
+            {done==='raised' && 'Added to your 1:1'}
+            {done==='escalated' && 'Escalated'}
+            {done==='messaged' && 'Message sent'}
+          </div>
+          <div style={{ fontSize:13.5, color:D.ink2, lineHeight:1.45, marginBottom:18, maxWidth:280, margin:'0 auto 18px' }}>
+            {done==='raised' && `I’ve queued this for your 12:30 with ${t.name}, with the plan-vs-assigned summary attached.`}
+            {done==='escalated' && `Flagged on the steering report. ${t.name} and their manager notified.`}
+            {done==='messaged' && `${t.name} will get your note and I’ll track the reply.`}
+          </div>
+          <Btn label="Done" kind="primary" onClick={()=>nav().back()} flex={false} />
+        </div>
+      </Sheet>
+    </Screen>
+  );
+}
+
+Object.assign(window, { TeamList, TeamDetail });
+
+</script>
+<script type="text/babel">
+/* ===== proto-misc.jsx (inlined) ===== */
+/* Lighter flows — Calendar invite intelligence + Travel follow-up */
+
+function CalendarInvite() {
+  const E = window.EMMA, v = E.invite;
+  const [picked, setPicked] = React.useState(null);
+  const [done, setDone] = React.useState(null);
+  React.useEffect(() => {
+    if (done) window.Store.resolve('northwind', {
+      action: done,
+      eventOverride: done==='Reschedule' ? undefined : {
+        ...window.DECISIONS.northwind.event,
+        title: done==='Accept' ? 'Northwind session accepted' : 'Northwind session declined',
+        detail: done==='Accept' ? 'Added to calendar · sender notified' : 'Declined with a note · sender notified',
+        tone: 'ok',
+      },
+    });
+  }, [done]);
+
+  if (done) {
+    const msg = done==='Reschedule' ? `Proposed ${picked} to ${v.from.split(' — ')[1]||v.from}. I’ll confirm once they accept.`
+      : done==='Accept' ? 'Added to your calendar and the sender notified.'
+      : 'Declined with a note. The sender has been notified.';
+    return (
+      <Screen eyebrow="Calendar" title="Invitation" footer={<Btn label="Back to cockpit" kind="soft" onClick={()=>nav().reset()} />}>
+        <div style={{ padding:'46px 26px', textAlign:'center' }}>
+          <SuccessCheck color={D.teal} />
+          <div style={{ fontSize:21, fontWeight:600 }}>{done==='Reschedule'?'Reschedule proposed':done==='Accept'?'Accepted':'Declined'}</div>
+          <div style={{ fontSize:14, color:D.ink2, lineHeight:1.5, marginTop:14, maxWidth:300, margin:'14px auto 0' }}>{msg}</div>
+        </div>
+      </Screen>
+    );
+  }
+
+  return (
+    <Screen eyebrow="Calendar · new invitation" title={v.title}
+      footer={
+        <div style={{ display:'flex', gap:9 }}>
+          <Btn label="Decline" kind="ghost" small onClick={()=>setDone('Decline')} />
+          <Btn label="Accept" kind="ghost" small onClick={()=>setDone('Accept')} />
+          <Btn label="Reschedule" kind="primary" small icon={<I.calendar size={14} />} onClick={()=>setPicked(v.alts[0])} />
+        </div>
+      }>
+      <Block label="Invitation">
+        <Row label="From" value={v.from} />
+        <Row label="Proposed" value={v.when} mono />
+        <Row label="Conflicts with" value={v.conflictsWith} valColor={D.clay} last />
+      </Block>
+
+      {/* conflict visual */}
+      <div style={{ padding:'16px 18px 0' }}>
+        <div style={{ display:'flex', gap:9, padding:'13px 14px', background:'color-mix(in oklab, var(--d-clay) 12%, transparent)', border:'1px solid color-mix(in oklab, var(--d-clay) 28%, transparent)', borderRadius:'var(--r-md)' }}>
+          <span style={{ color:D.clay, marginTop:1 }}><I.alert size={16} /></span>
+          <div>
+            <div style={{ fontSize:13.5, fontWeight:550, color:D.ink }}>Back-to-back conflict</div>
+            <div style={{ fontSize:12.5, color:D.ink2, lineHeight:1.4, marginTop:2 }}>This starts as your 11:00 QBR — which I expect to overrun by 30 minutes — is ending.</div>
+          </div>
+        </div>
+      </div>
+
+      <Block label="Recommendation">
+        <div style={{ padding:'14px 15px' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:8 }}>
+            <span style={{ color:D.teal }}><I.spark size={16} /></span><span style={{ fontSize:15, fontWeight:600 }}>{v.rec}</span>
+          </div>
+          <div style={{ fontSize:13, color:D.ink2, lineHeight:1.45 }}>{v.reason}</div>
+        </div>
+      </Block>
+
+      <div style={{ padding:'18px' }}>
+        <div style={{ ...D.mono, fontSize:10, fontWeight:600, letterSpacing:1.4, textTransform:'uppercase', color:D.ink3, marginBottom:10 }}>Suggested slots</div>
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+          {v.alts.map((alt,i)=>(
+            <div key={i} onClick={()=>setPicked(alt)} style={{ display:'flex', alignItems:'center', gap:11, padding:'13px 14px', background:D.surface, border:'1.5px solid '+(picked===alt?D.teal:D.line), borderRadius:'var(--r-md)', cursor:'pointer' }}>
+              <div style={{ width:20, height:20, borderRadius:99, border:'1.5px solid '+(picked===alt?D.teal:D.ink3), background:picked===alt?D.teal:'transparent', display:'flex', alignItems:'center', justifyContent:'center', color:'#06181B' }}>{picked===alt && <I.check size={13} sw={2.6} />}</div>
+              <span style={{ flex:1, fontSize:13.5, color:D.ink }}>{alt}</span>
+              {i===0 && <Pill color={D.teal}>Best</Pill>}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ height:16 }} />
+
+      <Sheet open={!!picked} onClose={()=>setPicked(null)}>
+        <div style={{ textAlign:'center', marginBottom:16 }}>
+          <div style={{ fontSize:18, fontWeight:600, marginBottom:6 }}>Propose {picked}?</div>
+          <div style={{ fontSize:13.5, color:D.ink2, lineHeight:1.45 }}>I’ll send {v.from.split(' — ')[1]||v.from} a reschedule request for {picked} and hold the slot.</div>
+        </div>
+        <div style={{ display:'flex', gap:9 }}>
+          <Btn label="Cancel" kind="ghost" onClick={()=>setPicked(null)} />
+          <Btn label="Send proposal" kind="primary" onClick={()=>setDone('Reschedule')} />
+        </div>
+      </Sheet>
+    </Screen>
+  );
+}
+
+function TravelDetail() {
+  const E = window.EMMA, tr = E.travel;
+  const [done, setDone] = React.useState(false);
+  const ST = { ok:{c:D.sage,l:'Confirmed'}, pending:{c:D.ochre,l:'Pending'} };
+  return (
+    <Screen eyebrow="Travel" title={`${tr.city} · ${tr.dates}`}
+      footer={ done
+        ? <Btn label="Back to cockpit" kind="soft" onClick={()=>nav().reset()} />
+        : <Btn label="Escalate to David" kind="primary" icon={<I.send size={15} />} onClick={()=>setDone(true)} /> }>
+      <div style={{ padding:'18px 18px 0' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:13 }}>
+          <div style={{ width:46, height:46, borderRadius:14, background:D.s3, color:D.teal, display:'flex', alignItems:'center', justifyContent:'center' }}><I.plane size={22} /></div>
+          <div><div style={{ fontSize:16, fontWeight:600 }}>{tr.purpose}</div><div style={{ fontSize:12.5, color:D.ink3, marginTop:2 }}>In {tr.inDays} days · {tr.country}</div></div>
+        </div>
+      </div>
+
+      {/* SLA alert */}
+      <div style={{ padding:'16px 18px 0' }}>
+        <div style={{ display:'flex', gap:9, padding:'13px 14px', background:'color-mix(in oklab, var(--d-clay) 12%, transparent)', border:'1px solid color-mix(in oklab, var(--d-clay) 28%, transparent)', borderRadius:'var(--r-md)' }}>
+          <span style={{ color:D.clay, marginTop:1 }}><I.alert size={16} /></span>
+          <span style={{ fontSize:13, color:D.ink2, lineHeight:1.4 }}><b style={{ color:D.ink }}>Past SLA.</b> {tr.sla}</span>
+        </div>
+      </div>
+
+      <Block label="Status">
+        {tr.items.map((it,i,arr)=>(
+          <div key={it.label} style={{ display:'flex', alignItems:'center', gap:12, padding:'14px 15px', borderBottom:i===arr.length-1?'none':'1px solid '+D.line }}>
+            <Dot color={ST[it.status].c} size={8} />
+            <div style={{ flex:1 }}>
+              <div style={{ fontSize:14, fontWeight:500 }}>{it.label}</div>
+              <div style={{ fontSize:12, color:D.ink3, marginTop:1 }}>{it.detail}{it.owner?` · ${it.owner}`:''}</div>
+            </div>
+            <span style={{ ...D.mono, fontSize:10, fontWeight:600, color:ST[it.status].c, letterSpacing:0.4 }}>{ST[it.status].l.toUpperCase()}</span>
+          </div>
+        ))}
+      </Block>
+
+      {/* follow-up log */}
+      <Block label="Follow-up log">
+        {[['Fri','Auto-reminder sent to David'],['Sat','Second reminder — no reply'],['Today','Flagged to you (past SLA)']].map((r,i,arr)=>(
+          <div key={i} style={{ display:'flex', gap:12, padding:'12px 15px', borderBottom:i===arr.length-1?'none':'1px solid '+D.line }}>
+            <span style={{ ...D.mono, fontSize:11, color:D.ink3, width:40 }}>{r[0]}</span>
+            <span style={{ flex:1, fontSize:13, color:D.ink2 }}>{r[1]}</span>
+          </div>
+        ))}
+      </Block>
+      <div style={{ height:16 }} />
+
+      {done && <div style={{ position:'absolute', inset:0, background:'rgba(12,14,17,0.92)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', padding:30, textAlign:'center' }}>
+        <SuccessCheck color={D.teal} />
+        <div style={{ fontSize:20, fontWeight:600 }}>Escalated to David</div>
+        <div style={{ fontSize:14, color:D.ink2, lineHeight:1.5, marginTop:12, maxWidth:280 }}>Marked urgent with a 2-hour SLA. I’ll alert you the moment flights are ticketed.</div>
+      </div>}
+    </Screen>
+  );
+}
+
+Object.assign(window, { CalendarInvite, TravelDetail });
+
+</script>
+<script type="text/babel">
+/* ===== proto-home.jsx (inlined) ===== */
+/* HOME — Mission Control cockpit, wired for navigation, with a Cockpit/Brief
+   toggle so both Phase-1 home concepts demo live in one consistent theme. */
+
+function Home() {
+  const E = window.EMMA;
+  const [mode, setMode] = React.useState('cockpit');
+  const [tab, setTab] = React.useState('queue');
+  const [openQ, setOpenQ] = React.useState(1);
+  const SIG = { 'at-risk':D.clay,'watch':D.ochre,'on-track':D.sage,'pending':D.ink3 };
+  const S = useStore();
+  const score = Store.score();
+  const phase = Store.phase();
+  const cleared = Store.cleared();
+  const openCount = 4 - Store.countResolved();
+
+  // header
+  const Header = () => (
+    <div style={{ padding:'56px 18px 6px' }}>
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          <Dot color={D.teal} size={7} pulse />
+          <span style={{ ...D.mono, fontSize:11.5, fontWeight:600, letterSpacing:2, color:D.ink2 }}>MISSION&nbsp;CONTROL</span>
+        </div>
+        <div style={{ width:32, height:32, borderRadius:99, background:D.s3, color:D.ink, display:'flex', alignItems:'center', justifyContent:'center', fontSize:11.5, fontWeight:600 }}>{E.user.initials}</div>
+      </div>
+      <div style={{ marginTop:18 }}>
+        <div style={{ fontFamily:'var(--serif)', fontSize:28, lineHeight:1.06, color:D.ink, fontWeight:400 }}>
+          {phase==='clear'
+            ? <>All clear, <span style={{ color:D.sage }}>Emma</span>.</>
+            : phase==='midday'
+            ? <>Good afternoon, Emma. <span style={{ color:D.teal }}>Making progress</span>.</>
+            : <>Good morning, Emma. The day is <span style={{ color:D.clay }}>elevated</span>.</>}
+        </div>
+        <div style={{ display:'flex', gap:7, marginTop:11, alignItems:'flex-start' }}>
+          <span style={{ color:D.teal, marginTop:1 }}><I.spark size={15} /></span>
+          <span style={{ fontSize:13.5, lineHeight:1.4, color:D.ink2 }}>
+            {phase==='clear'
+              ? 'Every critical item is handled. Launch risk reduced from High to Medium.'
+              : phase==='midday'
+              ? `${Store.countResolved()} of 4 handled. ${openCount} still need you before noon.`
+              : 'Two projects slipped overnight and Northwind is escalating. I’ve ranked everything that needs you.'}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+
+  // attention health summary
+  const AttentionCard = () => (
+    <div onClick={()=>nav().go('timeline')} style={{ display:'flex', alignItems:'center', gap:15, margin:'16px 18px 0', padding:'13px 16px', background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)', cursor:'pointer' }}>
+      <AttentionRing score={score} size={66} />
+      <div style={{ flex:1 }}>
+        <div style={{ ...D.mono, fontSize:10, fontWeight:600, letterSpacing:1.2, color:D.ink3, textTransform:'uppercase' }}>Attention health</div>
+        <div style={{ fontSize:14.5, fontWeight:600, marginTop:3, color: score>=90?D.sage:D.ink }}>{score>=90?'You’re in control':score>=75?'On top of it':'Needs your attention'}</div>
+        <div style={{ fontSize:12, color:D.ink3, marginTop:2 }}>{cleared?'All critical items cleared':`${openCount} decision${openCount===1?'':'s'} still open`}</div>
+      </div>
+      <I.chevR size={16} style={{ color:D.ink3 }} />
+    </div>
+  );
+
+  // cockpit/brief toggle
+  const Toggle = () => (
+    <div style={{ display:'flex', gap:4, margin:'16px 18px 0', padding:4, background:D.surface, border:'1px solid '+D.line, borderRadius:11 }}>
+      {[['cockpit','Cockpit'],['brief','Brief']].map(([k,l])=>(
+        <button key={k} onClick={()=>setMode(k)} style={{ ...D.mono, flex:1, padding:'9px', borderRadius:8, border:'none', cursor:'pointer', fontSize:11, fontWeight:600, letterSpacing:0.8, textTransform:'uppercase', background:mode===k?D.s3:'transparent', color:mode===k?D.ink:D.ink3 }}>{l}</button>
+      ))}
+    </div>
+  );
+
+  const stats = [
+    { k:'RISK', v:E.summary.atRisk, c:D.clay, sub:'projects', go:()=>{setMode('cockpit');setTab('risk');} },
+    { k:'DECISIONS', v:E.summary.decisions, c:D.iris, sub:'pending', go:()=>nav().go('approvalList') },
+    { k:'APPROVALS', v:E.summary.approvals, c:D.ochre, sub:'queued', go:()=>nav().go('approvalList') },
+    { k:'ESCALATION', v:E.summary.escalations, c:D.clay, sub:'active', go:()=>nav().go('calendarInvite') },
+  ];
+  const RiskStrip = () => (
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:1, margin:'16px 18px 0', background:D.line, border:'1px solid '+D.line, borderRadius:'var(--r-md)', overflow:'hidden' }}>
+      {stats.map(s=>(
+        <div key={s.k} onClick={s.go} style={{ background:D.surface, padding:'13px 11px', cursor:'pointer' }}>
+          <div style={{ ...D.mono, fontSize:9, fontWeight:600, letterSpacing:1, color:D.ink3 }}>{s.k}</div>
+          <div className="tnum" style={{ fontSize:26, fontWeight:600, color:s.c, lineHeight:1.1, marginTop:5, letterSpacing:-0.5 }}>{String(s.v).padStart(2,'0')}</div>
+          <div style={{ fontSize:10.5, color:D.ink3 }}>{s.sub}</div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const queue = [
+    { rank:1, key:'northwind', type:'ESCALATION', title:'Northwind churn risk', meta:'Customer · QBR at 11:00', rec:'Open the invite conflict', rightLabel:'Resolve', leftLabel:'Defer', c:D.clay, detail:'A back-to-back working session was just proposed. The QBR will likely overrun — resolve the conflict.', go:()=>nav().go('calendarInvite') },
+    { rank:2, key:'snowflake', type:'APPROVAL', title:'Snowflake expansion', meta:'$128,000 · exceeds $100K limit', rec:'Review — exceeds threshold', rightLabel:'Approve', leftLabel:'Clarify', c:D.clay, detail:'Unblocks Project Atlas. Requester lacks authority at this amount.', go:()=>nav().go('approvalDetail',{id:'a3'}) },
+    { rank:3, key:'sarah', type:'RISK', title:'Mobile Relaunch', meta:'Sarah Chen · plan misaligned', rec:'Open team risk', rightLabel:'Raise', leftLabel:'Watch', c:D.ochre, detail:'Stated focus is the design refresh; the auth ship-blocker is unowned.', go:()=>nav().go('teamDetail',{id:'t1'}) },
+    { rank:4, key:'hiring', type:'DECISION', title:'Sr. PM requisition', meta:'47 days open · panel 16:30', rec:'Decide before panel', rightLabel:'Approve', leftLabel:'Clarify', c:D.iris, detail:'Backfill for Marcus’ team. Panel waits on your approval.', go:()=>nav().go('approvalDetail',{id:'a6'}) },
+  ];
+  const quickAct = (q, kind) => {
+    const over = kind==='clarify'
+      ? { ...DECISIONS[q.key].event, title:'Clarification requested — '+q.title, detail:'Awaiting response · I’ll resurface it', tone:'info' }
+      : undefined;
+    Store.resolve(q.key, { action:kind, eventOverride:over });
+  };
+  const QueueItem = ({ q }) => {
+    const isOpen = openQ===q.rank;
+    return (
+      <div style={{ background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', left:0, top:0, bottom:0, width:3, background:q.c }} />
+        <div onClick={()=>setOpenQ(isOpen?null:q.rank)} style={{ display:'flex', alignItems:'center', gap:11, padding:'13px 14px', cursor:'pointer' }}>
+          <span className="tnum" style={{ ...D.mono, fontSize:13, fontWeight:600, color:D.ink3, width:18 }}>{String(q.rank).padStart(2,'0')}</span>
+          <div style={{ flex:1 }}>
+            <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+              <Pill color={q.c}>{q.type}</Pill>
+              <span style={{ fontSize:14.5, fontWeight:550, letterSpacing:-0.2 }}>{q.title}</span>
+            </div>
+            <div style={{ fontSize:12, color:D.ink3, marginTop:4 }}>{q.meta}</div>
+          </div>
+          <I.chevR size={16} style={{ color:D.ink3, transform:isOpen?'rotate(90deg)':'none', transition:'transform .2s' }} />
+        </div>
+        {isOpen && (
+          <div style={{ padding:'0 14px 13px 43px' }}>
+            <div style={{ fontSize:12.5, color:D.ink2, lineHeight:1.45, marginBottom:11 }}>{q.detail}</div>
+            <Btn label={q.rec} kind="primary" small icon={<I.chevR size={14} />} onClick={q.go} />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const intel = [
+    { icon:<I.route size={17} />, t:'Mission log', s:'Today’s timeline · attention to outcome', go:()=>nav().go('timeline'), c:D.teal },
+    { icon:<I.doc size={17} />, t:'Minutes ready', s:'Platform Architecture Review · 4 actions', go:()=>nav().go('minutes'), c:D.teal },
+    { icon:<I.plane size={17} />, t:'London travel', s:'Flights unticketed · past SLA', go:()=>nav().go('travel'), c:D.ochre },
+    { icon:<I.inbox size={17} />, t:'All approvals', s:'12 queued · 11 within policy', go:()=>nav().go('approvalList'), c:D.ink2 },
+  ];
+
+  const AllClear = () => (
+    <div style={{ padding:'8px 18px 0' }}>
+      <div style={{ background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-lg)', padding:'22px 20px', textAlign:'center' }}>
+        <div style={{ width:54, height:54, borderRadius:99, margin:'0 auto 12px', background:'color-mix(in oklab, var(--d-sage) 18%, transparent)', display:'flex', alignItems:'center', justifyContent:'center', color:D.sage }}><I.check size={28} sw={2.4} /></div>
+        <div style={{ fontFamily:'var(--serif)', fontSize:23, color:D.ink }}>The day is under control.</div>
+        <div style={{ fontSize:13.5, color:D.ink2, lineHeight:1.5, marginTop:8 }}>Every critical decision is addressed. Launch risk reduced from <b style={{ color:D.ink }}>High to Medium</b>.</div>
+      </div>
+      <div style={{ marginTop:12, background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)', overflow:'hidden' }}>
+        {['No approvals require action','No projects are currently at risk','Critical team check-ins complete'].map((r,i,arr)=>(
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:11, padding:'13px 15px', borderBottom:i<arr.length-1?'1px solid '+D.line:'none' }}>
+            <span style={{ color:D.sage }}><I.checkCircle size={17} /></span>
+            <span style={{ flex:1, fontSize:13.5, color:D.ink }}>{r}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ display:'flex', alignItems:'center', gap:11, marginTop:12, padding:'14px 16px', background:'color-mix(in oklab, var(--d-teal) 12%, transparent)', border:'1px solid color-mix(in oklab, var(--d-teal) 26%, transparent)', borderRadius:'var(--r-md)' }}>
+        <span style={{ color:D.teal }}><I.clock size={18} /></span>
+        <span style={{ flex:1, fontSize:13.5, color:D.ink }}>Your next meeting begins in <b>42 minutes</b>.</span>
+      </div>
+      <div style={{ display:'flex', gap:9, marginTop:12 }}>
+        <Btn label="Review today" kind="soft" icon={<I.route size={15} />} onClick={()=>nav().go('timeline')} />
+        <Btn label="Replay morning" kind="ghost" onClick={()=>Store.reset()} />
+      </div>
+    </div>
+  );
+
+  const Cockpit = () => (
+    <>
+      {cleared ? <AllClear /> : <>
+      <RiskStrip />
+      <div style={{ display:'flex', gap:6, padding:'18px 18px 12px' }}>
+        {[['queue','Decision queue'],['risk','Risk radar'],['today','Today']].map(([k,l])=>(
+          <button key={k} onClick={()=>setTab(k)} style={{ ...D.mono, fontSize:11, fontWeight:600, letterSpacing:0.6, padding:'8px 13px', borderRadius:8, border:'1px solid '+(tab===k?'transparent':D.line), background:tab===k?D.s3:'transparent', color:tab===k?D.ink:D.ink3, cursor:'pointer', textTransform:'uppercase' }}>{l}</button>
+        ))}
+      </div>
+      {tab==='queue' && <div style={{ display:'flex', flexDirection:'column', gap:9, padding:'0 18px' }}>
+        {queue.filter(q=>!S.resolved[q.key]).map(q=>(
+          <SwipeCard key={q.key} rightLabel={q.rightLabel} leftLabel={q.leftLabel} rightColor={D.sage} leftColor={D.ochre}
+            onRight={()=>quickAct(q,'approve')} onLeft={()=>quickAct(q,'clarify')} onLong={q.go}>
+            <QueueItem q={q} />
+          </SwipeCard>
+        ))}
+        <div style={{ ...D.mono, fontSize:10, color:D.ink3, textAlign:'center', letterSpacing:0.6, paddingTop:4 }}>← SWIPE TO ACT · HOLD TO OPEN →</div>
+      </div>}
+      {tab==='risk' && <div style={{ background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)', margin:'0 18px', overflow:'hidden' }}>
+        {E.team.filter(t=>t.status!=='on-track').map((t,i,arr)=><TeamRow key={t.id} t={t} last={i===arr.length-1} />)}
+      </div>}
+      {tab==='today' && <div style={{ margin:'0 18px' }}>
+        {E.schedule.map(m=>(
+          <div key={m.id} onClick={()=> m.flag==='escalation' && nav().go('calendarInvite')} style={{ display:'flex', alignItems:'center', gap:12, padding:'11px 4px', borderBottom:'1px solid '+D.line, cursor:m.flag==='escalation'?'pointer':'default' }}>
+            <span className="tnum" style={{ ...D.mono, fontSize:12, color:D.ink2, width:42 }}>{m.time}</span>
+            <div style={{ width:6, height:6, borderRadius:99, background:m.critical?D.clay:D.ink3 }} />
+            <span style={{ flex:1, fontSize:13.5, color:D.ink, fontWeight:m.critical?550:400 }}>{m.title}</span>
+            {m.overrun && <Pill color={D.ochre}>+30m</Pill>}
+            {m.flag==='escalation' && <I.chevR size={14} style={{ color:D.ink3 }} />}
+          </div>
+        ))}
+      </div>}
+      </>}
+
+      {/* intelligence entries */}
+      <div style={{ padding:'22px 18px 0' }}>
+        <div style={{ ...D.mono, fontSize:10, fontWeight:600, letterSpacing:1.4, textTransform:'uppercase', color:D.ink3, marginBottom:10 }}>Execute</div>
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+          {intel.map((it,i)=>(
+            <div key={i} onClick={it.go} style={{ display:'flex', alignItems:'center', gap:12, padding:'13px 14px', background:D.surface, border:'1px solid '+D.line, borderRadius:'var(--r-md)', cursor:'pointer' }}>
+              <span style={{ color:it.c }}>{it.icon}</span>
+              <div style={{ flex:1 }}><div style={{ fontSize:14, fontWeight:500 }}>{it.t}</div><div style={{ fontSize:12, color:D.ink3 }}>{it.s}</div></div>
+              <I.chevR size={15} style={{ color:D.ink3 }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
+  // ── Brief mode (conversational, dark)
+  const Beat = ({ children }) => (
+    <div style={{ display:'flex', gap:11, padding:'0 18px', marginBottom:20 }}>
+      <div style={{ width:28, height:28, borderRadius:99, flexShrink:0, background:'linear-gradient(150deg, var(--d-teal), var(--teal-deep))', color:'#06181B', display:'flex', alignItems:'center', justifyContent:'center' }}><I.spark size={15} sw={1.9} /></div>
+      <div style={{ flex:1, paddingTop:2 }}>{children}</div>
+    </div>
+  );
+  const Chip = ({ label, icon, primary, go }) => (
+    <button onClick={go} style={{ ...D.mono, display:'inline-flex', alignItems:'center', gap:6, fontSize:11, fontWeight:600, letterSpacing:0.4, textTransform:'uppercase', padding:'8px 13px', borderRadius:99, cursor:'pointer', border:primary?'none':'1px solid '+D.line, background:primary?D.teal:'transparent', color:primary?'#06181B':D.ink2 }}>{icon}{label}</button>
+  );
+  const Brief = () => (
+    <div style={{ paddingTop:18 }}>
+      <Beat><div style={{ fontSize:15.5, lineHeight:1.5, color:D.ink, fontWeight:500 }}>Your day in one breath: <b>three decisions</b> before noon, <b style={{ color:D.clay }}>two projects at risk</b>, first meeting in {E.summary.firstMeetingMins} minutes.</div></Beat>
+      <Beat>
+        <div style={{ fontSize:14, lineHeight:1.5, color:D.ink2, marginBottom:11 }}>First, <b style={{ color:D.ink }}>Northwind is escalating</b> on your 11:00 — and a back-to-back session was just proposed. Resolve the conflict before the call.</div>
+        <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}><Chip label="Open invite" primary icon={<I.calendar size={13} />} go={()=>nav().go('calendarInvite')} /></div>
+      </Beat>
+      <Beat>
+        <div style={{ fontSize:14, lineHeight:1.5, color:D.ink2, marginBottom:11 }}>Three decisions need you. One exceeds your $100K limit, so I left it for you.</div>
+        <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}><Chip label="Review Snowflake" primary icon={<I.chevR size={13} />} go={()=>nav().go('approvalDetail',{id:'a3'})} /><Chip label="All approvals" go={()=>nav().go('approvalList')} /></div>
+      </Beat>
+      <Beat>
+        <div style={{ fontSize:14, lineHeight:1.5, color:D.ink2, marginBottom:11 }}><b style={{ color:D.ink }}>Sarah’s plan doesn’t align</b> with her priorities — Mobile Relaunch is at risk. Friday’s meeting also has 4 actions ready to allocate.</div>
+        <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}><Chip label="Open risk" primary go={()=>nav().go('teamDetail',{id:'t1'})} /><Chip label="Allocate actions" icon={<I.route size={13} />} go={()=>nav().go('minutes')} /></div>
+      </Beat>
+      <Beat>
+        <div style={{ fontSize:14, lineHeight:1.5, color:D.ink2, marginBottom:11 }}>Lastly, London in {E.travel.inDays} days — flights unticketed past SLA. I’ve nudged David twice.</div>
+        <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}><Chip label="Escalate" primary icon={<I.plane size={13} />} go={()=>nav().go('travel')} /></div>
+      </Beat>
+      <div style={{ textAlign:'center', fontSize:12.5, color:D.ink3, padding:'2px 20px 0' }}>That’s everything. I’ll ping you if anything changes.</div>
+    </div>
+  );
+
+  return (
+    <div className="noscroll" style={{ position:'absolute', inset:0, overflowY:'auto', overflowX:'hidden', background:D.bg, color:D.ink, paddingBottom:112 }}>
+      <Header />
+      <AttentionCard />
+      <Toggle />
+      {mode==='cockpit' ? <Cockpit /> : <Brief />}
+
+      {/* command bar */}
+      <div style={{ position:'fixed', display:'none' }} />
+      <div style={{ position:'sticky', bottom:18, margin:'24px 18px 0', display:'flex', alignItems:'center', gap:10, padding:'7px 7px 7px 16px', background:'rgba(27,31,38,0.78)', backdropFilter:'blur(16px) saturate(160%)', WebkitBackdropFilter:'blur(16px) saturate(160%)', border:'1px solid '+D.line, borderRadius:12, boxShadow:'0 18px 40px rgba(0,0,0,0.5)' }}>
+        <span style={{ ...D.mono, fontSize:12, color:D.ink3, flex:1, letterSpacing:0.4 }}>COMMAND · approve, brief, reschedule…</span>
+        <div style={{ width:38, height:38, borderRadius:9, background:D.teal, color:'#06181B', display:'flex', alignItems:'center', justifyContent:'center' }}><I.mic size={18} /></div>
+      </div>
+    </div>
+  );
+}
+window.Home = Home;
+
+</script>
+<script type="text/babel">
+/* ===== proto-app.jsx (inlined) ===== */
+/* APP SHELL — navigation stack + screen routing, mounted in the iOS frame. */
+
+function renderScreen(entry) {
+  const p = entry.props || {};
+  switch (entry.screen) {
+    case 'approvalList':   return <ApprovalList />;
+    case 'approvalDetail': return <ApprovalDetail {...p} />;
+    case 'minutes':        return <MinutesDetail />;
+    case 'teamList':       return <TeamList />;
+    case 'teamDetail':     return <TeamDetail {...p} />;
+    case 'calendarInvite': return <CalendarInvite />;
+    case 'travel':         return <TravelDetail />;
+    case 'timeline':       return <TimelineView />;
+    default:               return null;
+  }
+}
+
+function App() {
+  const [stack, setStack] = React.useState([{ screen:'home' }]);
+  // expose nav synchronously every render so handlers always resolve
+  window.__nav = {
+    go:   (screen, props) => setStack(s => [...s, { screen, props }]),
+    back: () => setStack(s => s.length > 1 ? s.slice(0, -1) : s),
+    reset:() => setStack([{ screen:'home' }]),
+  };
+
+  return (
+    <div style={{ position:'relative', height:'100%', width:'100%', overflow:'hidden' }}>
+      <Home />
+      {stack.slice(1).map((e, i) => (
+        <div key={i} style={{ position:'absolute', inset:0, zIndex:10 + i }}>{renderScreen(e)}</div>
+      ))}
+    </div>
+  );
+}
+
+function Stage() {
+  return (
+    <div style={{ minHeight:'100vh', background:'#E7E4DD', display:'flex', flexDirection:'column', alignItems:'center', padding:'40px 20px 60px', boxSizing:'border-box' }}>
+      <div style={{ textAlign:'center', marginBottom:26, maxWidth:520 }}>
+        <div style={{ fontFamily:'var(--mono)', fontSize:11, fontWeight:600, letterSpacing:2, textTransform:'uppercase', color:'var(--ink-3)', marginBottom:10 }}>AI Chief of Staff · Interactive Prototype</div>
+        <div style={{ fontFamily:'var(--serif)', fontSize:34, lineHeight:1, letterSpacing:-0.5, color:'var(--ink)', marginBottom:12 }}>Mission Control</div>
+        <div style={{ fontSize:14.5, color:'var(--ink-2)', lineHeight:1.5 }}>
+          Live cockpit for Emma Rodriguez, COO. Switch <b style={{ color:'var(--ink)' }}>Cockpit ⁄ Brief</b>, then tap into Approvals, Meeting Minutes, Team Risk, Calendar, and Travel — every flow is interactive.
+        </div>
+      </div>
+      <IOSDevice dark><App /></IOSDevice>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<Stage />);
+
+</script>
+</body>
+</html>

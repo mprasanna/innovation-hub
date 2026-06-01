@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Chief of Staff — Why · How · Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;450;500;600;700&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sans:'Geist',-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --serif:'Instrument Serif',Georgia,serif;
+  --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --teal:#0F7682; --teal-deep:#0A5A64; --teal-soft:#E2F0F0;
+  --clay:#B24A38; --clay-soft:#F6E6E1;
+  --ochre:#A8782A; --ochre-soft:#F5ECD9;
+  --sage:#4E7C5C; --sage-soft:#E4EEE6;
+  --iris:#4B4F86; --iris-soft:#E9E9F2;
+  --paper:#F4F2EC; --surface:#FFFFFF; --surface-2:#FAF8F3; --surface-3:#EFEBE2;
+  --ink:#1B1C1F; --ink-2:#5C5E66; --ink-3:#93949C;
+  --hairline:rgba(27,28,31,0.085); --hairline-2:rgba(27,28,31,0.05);
+  --r-sm:10px; --r-md:16px; --r-lg:22px; --r-xl:28px;
+  --shadow-card:0 1px 2px rgba(27,28,31,0.04),0 6px 18px rgba(27,28,31,0.05);
+  --shadow-lift:0 2px 8px rgba(27,28,31,0.06),0 18px 40px rgba(27,28,31,0.10);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; font-family:var(--sans); color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  line-height:1.55;
+  background-image:radial-gradient(rgba(27,28,31,0.022) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+.tnum{font-variant-numeric:tabular-nums;}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+.eyebrow{font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--teal);}
+.serif{font-family:var(--serif);}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:saturate(1.4) blur(10px);
+  background:rgba(244,242,236,0.82);border-bottom:1px solid var(--hairline);}
+.topbar .wrap{display:flex;align-items:center;gap:18px;height:56px;}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;font-size:14.5px;letter-spacing:-0.2px;}
+.brand .mk{width:24px;height:24px;border-radius:7px;background:var(--ink);display:grid;place-items:center;}
+.brand .mk svg{display:block;}
+.navlinks{margin-left:auto;display:flex;gap:4px;}
+.navlinks a{font-size:13px;color:var(--ink-2);text-decoration:none;padding:7px 12px;border-radius:99px;transition:.18s;}
+.navlinks a:hover{color:var(--ink);background:var(--surface-3);}
+.navlinks a.cta{background:var(--teal);color:#fff;font-weight:500;}
+.navlinks a.cta:hover{background:var(--teal-deep);}
+
+/* ---------- hero ---------- */
+.hero{padding:84px 0 52px;}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(40px,6vw,68px);line-height:0.98;letter-spacing:-1px;margin:18px 0 0;}
+.hero h1 em{font-style:italic;color:var(--teal);}
+.hero .lede{font-size:clamp(16px,2vw,19px);color:var(--ink-2);max-width:640px;margin:22px 0 0;line-height:1.5;}
+.hero .lede b{color:var(--ink);font-weight:600;}
+.heroactions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px;}
+.btn{font-size:14px;font-weight:500;text-decoration:none;padding:12px 20px;border-radius:99px;display:inline-flex;align-items:center;gap:8px;transition:.18s;border:1px solid transparent;}
+.btn.primary{background:var(--ink);color:#fff;}
+.btn.primary:hover{transform:translateY(-1px);box-shadow:var(--shadow-lift);}
+.btn.ghost{background:var(--surface);color:var(--ink);border-color:var(--hairline);}
+.btn.ghost:hover{background:var(--surface-2);}
+.metarow{display:flex;flex-wrap:wrap;gap:30px;margin-top:46px;padding-top:26px;border-top:1px solid var(--hairline);}
+.metarow .m .n{font-family:var(--serif);font-size:34px;line-height:1;color:var(--ink);}
+.metarow .m .l{font-size:12.5px;color:var(--ink-2);margin-top:6px;max-width:160px;}
+.metarow .m .n span{font-size:18px;color:var(--ink-3);}
+
+/* ---------- section scaffold ---------- */
+section{padding:60px 0;}
+.sechead{max-width:680px;margin-bottom:38px;}
+.sechead h2{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4vw,40px);line-height:1.04;letter-spacing:-0.5px;margin:12px 0 0;}
+.sechead p{font-size:16px;color:var(--ink-2);margin:16px 0 0;line-height:1.55;}
+.divider{height:1px;background:var(--hairline);}
+
+/* ---------- WHY: before / after ---------- */
+.split{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;}
+.panel{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-lg);padding:26px;box-shadow:var(--shadow-card);}
+.panel.before{background:var(--surface-2);}
+.panel .ptag{font-family:var(--mono);font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px;}
+.panel.after .ptag{color:var(--teal);}
+.scatter{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{font-size:12.5px;padding:7px 12px;border-radius:99px;border:1px solid var(--hairline);background:var(--surface);color:var(--ink-2);display:inline-flex;align-items:center;gap:6px;}
+.chip .d{width:6px;height:6px;border-radius:99px;background:var(--ink-3);}
+.scatter .chip:nth-child(2n){transform:translateY(3px);}
+.scatter .chip:nth-child(3n){transform:translateY(-2px);}
+.afterline{display:flex;align-items:flex-start;gap:11px;padding:11px 0;border-bottom:1px solid var(--hairline-2);font-size:14px;}
+.afterline:last-child{border-bottom:none;}
+.afterline .ic{width:22px;height:22px;border-radius:7px;flex-shrink:0;display:grid;place-items:center;color:#fff;margin-top:1px;}
+.afterline b{font-weight:600;}
+.afterline .sub{color:var(--ink-2);font-size:13px;}
+.arrowcol{display:grid;place-items:center;width:84px;}
+.arrowcol .ring{width:44px;height:44px;border-radius:99px;background:var(--ink);color:#fff;display:grid;place-items:center;box-shadow:var(--shadow-lift);}
+.objgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:34px;}
+.objcard{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-md);padding:18px;}
+.objcard .id{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:1px;}
+.objcard .h{font-size:14.5px;font-weight:600;margin:8px 0 6px;line-height:1.3;}
+.objcard .b{font-size:13px;color:var(--ink-2);line-height:1.5;}
+
+/* ---------- HOW: the loop ---------- */
+.loop{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:6px;position:relative;}
+.loopstep{text-align:center;padding:0 8px;position:relative;}
+.loopstep .num{font-family:var(--mono);font-size:11px;color:var(--ink-3);}
+.loopstep .badge{width:54px;height:54px;border-radius:16px;margin:12px auto 14px;display:grid;place-items:center;color:#fff;box-shadow:var(--shadow-card);position:relative;z-index:2;}
+.loopstep h4{font-size:14px;font-weight:600;margin:0 0 6px;}
+.loopstep p{font-size:12px;color:var(--ink-2);margin:0;line-height:1.45;}
+.loopstep:not(:last-child)::after{content:"";position:absolute;top:39px;right:-50%;width:100%;height:2px;
+  background:repeating-linear-gradient(90deg,var(--hairline) 0 6px,transparent 6px 12px);z-index:1;}
+.loopstep.gate .badge{box-shadow:0 0 0 4px var(--teal-soft),var(--shadow-card);}
+.gatecallout{margin-top:34px;background:var(--teal-soft);border:1px solid rgba(15,118,130,0.22);border-radius:var(--r-md);
+  padding:18px 22px;display:flex;gap:14px;align-items:flex-start;}
+.gatecallout .ic{flex-shrink:0;color:var(--teal-deep);}
+.gatecallout .t{font-size:14px;color:var(--teal-deep);line-height:1.5;}
+.gatecallout .t b{color:var(--ink);}
+.princ{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px;}
+.pr{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-md);padding:16px 16px 18px;}
+.pr .ic{color:var(--teal);margin-bottom:10px;}
+.pr h5{font-size:13.5px;font-weight:600;margin:0 0 5px;}
+.pr p{font-size:12px;color:var(--ink-2);margin:0;line-height:1.45;}
+
+/* ---------- TECH: diagram ---------- */
+.diagramwrap{background:var(--surface);border:1px solid var(--hairline);border-radius:var(--r-xl);padding:30px 26px 22px;box-shadow:var(--shadow-card);overflow:hidden;}
+.diagramwrap svg{display:block;width:100%;height:auto;}
+.legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:18px;padding-top:18px;border-top:1px solid var(--hairline);}
+.legend .li{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2);}
+.legend .sw{width:11px;height:11px;border-radius:4px;}
+.flowdash{stroke-dasharray:5 7;animation:flow 1.1s linear infinite;}
+@keyframes flow{to{stroke-dashoffset:-24;}}
+.dnode{transition:.2s;}
+.matrix{margin-top:38px;border:1px solid var(--hairline);border-radius:var(--r-md);overflow:hidden;background:var(--surface);}
+.matrix .row{display:grid;grid-template-columns:1.5fr 2.2fr 0.9fr 0.8fr;gap:0;border-bottom:1px solid var(--hairline-2);}
+.matrix .row:last-child{border-bottom:none;}
+.matrix .row.head{background:var(--surface-2);}
+.matrix .cell{padding:12px 16px;font-size:13px;color:var(--ink-2);display:flex;align-items:center;}
+.matrix .row.head .cell{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--ink-3);}
+.matrix .cell.sys{font-weight:600;color:var(--ink);font-size:13.5px;}
+.pill{font-family:var(--mono);font-size:10px;letter-spacing:.5px;padding:3px 9px;border-radius:99px;text-transform:uppercase;}
+.pill.rw{background:var(--iris-soft);color:var(--iris);}
+.pill.r{background:var(--surface-3);color:var(--ink-2);}
+.pill.w{background:var(--ochre-soft);color:var(--ochre);}
+.pill.mvp{background:var(--sage-soft);color:var(--sage);}
+.pill.p2{background:var(--surface-3);color:var(--ink-3);}
+
+/* ---------- closing ---------- */
+.closing{background:var(--ink);color:#fff;border-radius:var(--r-xl);padding:54px 44px;margin:20px 0 0;position:relative;overflow:hidden;}
+.closing::before{content:"";position:absolute;right:-80px;top:-80px;width:300px;height:300px;border-radius:99px;
+  background:radial-gradient(circle,rgba(63,182,194,0.25),transparent 70%);}
+.closing .eyebrow{color:#3FB6C2;}
+.closing h2{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4vw,42px);line-height:1.02;letter-spacing:-0.5px;margin:14px 0 0;max-width:620px;position:relative;}
+.closing p{color:#9DA2AC;max-width:560px;margin:16px 0 0;font-size:15.5px;position:relative;}
+.closing .heroactions{margin-top:30px;position:relative;}
+.closing .btn.primary{background:#fff;color:var(--ink);}
+.closing .btn.ghost{background:transparent;color:#fff;border-color:rgba(255,255,255,0.22);}
+.closing .btn.ghost:hover{background:rgba(255,255,255,0.08);}
+footer{padding:40px 0 60px;color:var(--ink-3);font-size:12.5px;text-align:center;}
+footer .mono{font-family:var(--mono);}
+
+/* ---------- reveal ---------- */
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+@media(max-width:860px){
+  .split{grid-template-columns:1fr;gap:14px;}
+  .arrowcol{width:auto;height:54px;}
+  .arrowcol .ring{transform:rotate(90deg);}
+  .objgrid,.princ{grid-template-columns:1fr 1fr;}
+  .loop{grid-template-columns:1fr 1fr 1fr;row-gap:30px;}
+  .loopstep:not(:last-child)::after{display:none;}
+  .matrix .row{grid-template-columns:1fr 1fr;}
+  .matrix .cell:nth-child(3),.matrix .cell:nth-child(4){display:none;}
+  .matrix .row.head .cell:nth-child(3),.matrix .row.head .cell:nth-child(4){display:none;}
+}
+@media(max-width:560px){
+  .objgrid,.princ,.loop{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar"><div class="wrap">
+  <div class="brand">
+    <span class="mk"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3FB6C2" stroke-width="2.4"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.4" fill="#3FB6C2" stroke="none"/></svg></span>
+    AI Chief of Staff
+  </div>
+  <div class="navlinks">
+    <a href="#why">Why</a>
+    <a href="#how">How</a>
+    <a href="#tech">Architecture</a>
+    <a class="cta" href="AI-Chief-of-Staff-Prototype.html">Open the demo →</a>
+  </div>
+</div></div>
+
+<!-- HERO -->
+<header class="hero"><div class="wrap reveal">
+  <div class="eyebrow">AI Executive Assistant · Product Brief</div>
+  <h1>The coordination layer<br>that runs the executive's <em>day</em>.</h1>
+  <p class="lede">A mobile-first digital chief of staff that consolidates calendar, email, approvals, team risk, meeting actions, and travel into <b>one proactive briefing</b> — and acts on the executive's behalf, always inside their policy and always under their control.</p>
+  <div class="heroactions">
+    <a class="btn primary" href="AI-Chief-of-Staff-Prototype.html">Open the interactive demo
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg>
+    </a>
+    <a class="btn ghost" href="#tech">See the architecture</a>
+  </div>
+  <div class="metarow">
+    <div class="m"><div class="n tnum">7<span> systems</span></div><div class="l">unified into a single morning brief</div></div>
+    <div class="m"><div class="n tnum">1</div><div class="l">human-in-control gate on every action</div></div>
+    <div class="m"><div class="n tnum">100<span>%</span></div><div class="l">of AI actions written to an audit log</div></div>
+  </div>
+</div></header>
+
+<!-- WHY -->
+<section id="why"><div class="wrap">
+  <div class="sechead reveal">
+    <div class="eyebrow">Why</div>
+    <h2>An executive's attention is spent finding the work, not doing it.</h2>
+    <p>A COO's morning is scattered across a calendar, two inboxes, an ERP approvals queue, a task tracker, and a dozen Slack threads. The signal is real — it's just buried. The job of a chief of staff is to collapse that noise into a single, ranked view of what needs a decision today.</p>
+  </div>
+
+  <div class="split reveal">
+    <div class="panel before">
+      <div class="ptag">Today · without a chief of staff</div>
+      <div class="scatter">
+        <span class="chip"><span class="d"></span>Calendar</span>
+        <span class="chip"><span class="d"></span>Gmail · 240 unread</span>
+        <span class="chip"><span class="d"></span>Outlook</span>
+        <span class="chip"><span class="d"></span>Odoo approvals · 12</span>
+        <span class="chip"><span class="d"></span>monday.com</span>
+        <span class="chip"><span class="d"></span>Team DMs</span>
+        <span class="chip"><span class="d"></span>Travel docs</span>
+        <span class="chip"><span class="d"></span>Dashboards</span>
+        <span class="chip"><span class="d"></span>WhatsApp</span>
+      </div>
+      <p style="font-size:13px;color:var(--ink-2);margin:18px 0 0;line-height:1.5;">Nine destinations. No ranking. The executive becomes the integration layer — and the most expensive one in the company.</p>
+    </div>
+
+    <div class="arrowcol">
+      <div class="ring"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    </div>
+
+    <div class="panel after">
+      <div class="ptag">8:17 · one consolidated brief</div>
+      <div class="afterline"><span class="ic" style="background:var(--iris)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg></span><div><b>3 decisions need you before noon.</b><div class="sub">Ranked by deadline and business impact.</div></div></div>
+      <div class="afterline"><span class="ic" style="background:var(--clay)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3.5L22 19H2L12 3.5z"/></svg></span><div><b>Atlas &amp; Mobile Relaunch slipped overnight.</b><div class="sub">Team-plan deviation detected automatically.</div></div></div>
+      <div class="afterline"><span class="ic" style="background:var(--ochre)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v18M16 7.5c0-2-1.8-3-4-3s-4 1-4 3 1.8 2.6 4 3 4 1 4 3-1.8 3-4 3-4-1-4-3"/></svg></span><div><b>11 of 12 approvals within policy.</b><div class="sub">One exceeds your $100K limit — escalated.</div></div></div>
+      <div class="afterline"><span class="ic" style="background:var(--teal)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg></span><div><b>Northwind QBR is escalating — on your 11:00.</b><div class="sub">Prep surfaced; likely to overrun 30 min.</div></div></div>
+    </div>
+  </div>
+
+  <div class="objgrid">
+    <div class="objcard reveal"><div class="id">OBJ-001</div><div class="h">Reduce coordination load</div><div class="b">One view of the day instead of checking five systems before the first meeting.</div></div>
+    <div class="objcard reveal"><div class="id">OBJ-003</div><div class="h">Surface execution risk early</div><div class="b">Flag when a team member's stated plan diverges from their allocated, critical work.</div></div>
+    <div class="objcard reveal"><div class="id">OBJ-005</div><div class="h">Faster approvals, same control</div><div class="b">Routine items recommended within policy; exceptions escalated, never silently approved.</div></div>
+  </div>
+</div></section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- HOW -->
+<section id="how"><div class="wrap">
+  <div class="sechead reveal">
+    <div class="eyebrow">How</div>
+    <h2>A closed loop: sense the signal, reason against policy, then wait for the human.</h2>
+    <p>The assistant is proactive but never autonomous on what matters. Every cycle runs the same six steps — and the fourth is a hard gate the executive owns.</p>
+  </div>
+
+  <div class="loop reveal">
+    <div class="loopstep"><div class="num">01</div><div class="badge" style="background:var(--teal)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3.5 13.5L6 5h12l2.5 8.5v5a2 2 0 01-2 2H5.5a2 2 0 01-2-2z"/><path d="M3.5 13.5H9l1 2.5h4l1-2.5h5.5"/></svg></div><h4>Sense</h4><p>Pull events, mail, approvals, tasks &amp; updates from connected systems.</p></div>
+    <div class="loopstep"><div class="num">02</div><div class="badge" style="background:var(--iris)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/></svg></div><h4>Reason</h4><p>Apply preferences, client rules &amp; approval policy to rank what matters.</p></div>
+    <div class="loopstep"><div class="num">03</div><div class="badge" style="background:var(--ochre)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3.5L22 19H2L12 3.5z"/><path d="M12 10v4M12 17v.5"/></svg></div><h4>Recommend</h4><p>Draft the action — accept, reschedule, reply, approve, reassign.</p></div>
+    <div class="loopstep gate"><div class="num">04</div><div class="badge" style="background:var(--ink)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/></svg></div><h4>Approve</h4><p>The executive reviews, edits, overrides, defers or confirms. Human gate.</p></div>
+    <div class="loopstep"><div class="num">05</div><div class="badge" style="background:var(--sage)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12l5 5L20 6"/></svg></div><h4>Act</h4><p>Write the decision back to the source system &amp; notify the right people.</p></div>
+    <div class="loopstep"><div class="num">06</div><div class="badge" style="background:var(--clay)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 13h6M9.5 16.5h6"/></svg></div><h4>Log</h4><p>Record action, confidence &amp; before/after for a complete audit trail.</p></div>
+  </div>
+
+  <div class="gatecallout reveal">
+    <span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
+    <div class="t"><b>Human-in-control is the product, not a setting.</b> The AI may auto-approve only routine items that sit fully inside a configured policy. Anything high-value, off-policy, or externally-facing — sending email, approving over a limit, booking travel — is drafted and held for explicit confirmation.</div>
+  </div>
+
+  <div class="princ">
+    <div class="pr reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3l1.8 5.4L19 10l-5.2 1.6L12 17l-1.8-5.4L5 10l5.2-1.6z"/></svg></div><h5>Proactive</h5><p>Surfaces what matters before being asked.</p></div>
+    <div class="pr reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0013 0M12 18v3"/></svg></div><h5>Phone-first</h5><p>Brief, approve and command from mobile or voice.</p></div>
+    <div class="pr reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M7 3h7l4 4v14H7z"/><path d="M9.5 13h6M9.5 16.5h6"/></svg></div><h5>Auditable</h5><p>Every recommendation &amp; decision is logged.</p></div>
+    <div class="pr reveal"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></svg></div><h5>Configurable</h5><p>Rules &amp; policies per org — never hardcoded.</p></div>
+  </div>
+</div></section>
+
+<div class="wrap"><div class="divider"></div></div>
+
+<!-- TECH -->
+<section id="tech"><div class="wrap">
+  <div class="sechead reveal">
+    <div class="eyebrow">Architecture</div>
+    <h2>How data flows — from your systems, through reasoning, back under control.</h2>
+    <p>Connectors read from the systems of record into a configurable context store. Intelligence engines reason over that context, every proposed action passes the human gate, and approved actions are written back to the source while a parallel audit stream captures everything.</p>
+  </div>
+
+  <div class="diagramwrap reveal">
+    <svg viewBox="0 0 1000 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Data flow diagram of the AI Chief of Staff">
+      <defs>
+        <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1L8 4.5L1 8" fill="none" stroke="#93949C" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <marker id="arrTeal" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1L8 4.5L1 8" fill="none" stroke="#0F7682" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <marker id="arrClay" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1L8 4.5L1 8" fill="none" stroke="#B24A38" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <style>
+          .bandlbl{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;fill:#93949C;text-transform:uppercase;}
+          .ntext{font-family:var(--sans);font-size:12.5px;font-weight:600;fill:#1B1C1F;}
+          .nsub{font-family:var(--sans);font-size:10px;fill:#5C5E66;}
+          .flow{stroke:#93949C;stroke-width:1.6;fill:none;}
+        </style>
+      </defs>
+
+      <!-- ===== BAND 1: SOURCE SYSTEMS ===== -->
+      <text x="40" y="34" class="bandlbl">Systems of record</text>
+      <g class="dnode">
+        <rect x="40"  y="46" width="166" height="52" rx="12" fill="#FAF8F3" stroke="#0F7682" stroke-width="1.3"/>
+        <text x="60" y="71" class="ntext">Calendar</text><text x="60" y="87" class="nsub">Google · Outlook</text>
+        <rect x="226" y="46" width="166" height="52" rx="12" fill="#FAF8F3" stroke="#0F7682" stroke-width="1.3"/>
+        <text x="246" y="71" class="ntext">Email</text><text x="246" y="87" class="nsub">Gmail · Outlook</text>
+        <rect x="412" y="46" width="166" height="52" rx="12" fill="#FAF8F3" stroke="#0F7682" stroke-width="1.3"/>
+        <text x="432" y="71" class="ntext">monday.com</text><text x="432" y="87" class="nsub">tasks · boards</text>
+        <rect x="598" y="46" width="166" height="52" rx="12" fill="#FAF8F3" stroke="#0F7682" stroke-width="1.3"/>
+        <text x="618" y="71" class="ntext">Odoo / ERP</text><text x="618" y="87" class="nsub">approvals · tracker</text>
+        <rect x="784" y="46" width="176" height="52" rx="12" fill="#FAF8F3" stroke="#0F7682" stroke-width="1.3"/>
+        <text x="804" y="71" class="ntext">Voice / STT</text><text x="804" y="87" class="nsub">commands · transcripts</text>
+      </g>
+
+      <!-- flows down into connector layer -->
+      <path class="flow flowdash" d="M123 98 V128" marker-end="url(#arr)"/>
+      <path class="flow flowdash" d="M309 98 V128" marker-end="url(#arr)"/>
+      <path class="flow flowdash" d="M495 98 V128" marker-end="url(#arr)"/>
+      <path class="flow flowdash" d="M681 98 V128" marker-end="url(#arr)"/>
+      <path class="flow flowdash" d="M872 98 V128" marker-end="url(#arr)"/>
+
+      <!-- ===== BAND 2: SECURE CONNECTOR LAYER ===== -->
+      <rect x="40" y="132" width="920" height="56" rx="14" fill="#E2F0F0" stroke="#0F7682" stroke-width="1.3"/>
+      <text x="60" y="158" class="ntext" style="fill:#0A5A64">Secure connector layer</text>
+      <text x="60" y="175" class="nsub" style="fill:#0A5A64">OAuth tokens · least-privilege scopes · per-org integration registry · scheduled &amp; event-driven sync</text>
+
+      <path class="flow flowdash" d="M495 188 V218" marker-end="url(#arr)"/>
+
+      <!-- ===== BAND 3: CONTEXT STORE ===== -->
+      <text x="40" y="240" class="bandlbl">Context store · configurable per organization</text>
+      <rect x="40" y="252" width="455" height="78" rx="14" fill="#FFFFFF" stroke="#E9E9F2" stroke-width="1.3"/>
+      <rect x="40" y="252" width="6" height="78" rx="3" fill="#4B4F86"/>
+      <text x="62" y="276" class="ntext">Master data</text>
+      <text x="62" y="294" class="nsub">Org config · exec preferences · client profiles</text>
+      <text x="62" y="310" class="nsub">approval policies · escalation matrix · team roster</text>
+
+      <rect x="505" y="252" width="455" height="78" rx="14" fill="#FFFFFF" stroke="#E9E9F2" stroke-width="1.3"/>
+      <rect x="505" y="252" width="6" height="78" rx="3" fill="#4B4F86"/>
+      <text x="527" y="276" class="ntext">Transaction data</text>
+      <text x="527" y="294" class="nsub">Events · emails · tasks · approval requests</text>
+      <text x="527" y="310" class="nsub">team updates · minutes · travel items · reminders</text>
+
+      <path class="flow flowdash" d="M495 330 V360" marker-end="url(#arr)"/>
+
+      <!-- ===== BAND 4: INTELLIGENCE ENGINES ===== -->
+      <text x="40" y="382" class="bandlbl">Intelligence engines</text>
+      <g>
+        <rect x="40"  y="394" width="172" height="58" rx="12" fill="#F5ECD9" stroke="#A8782A" stroke-width="1.2"/>
+        <text x="58" y="419" class="ntext">Briefing</text><text x="58" y="436" class="nsub">rank the day</text>
+        <rect x="232" y="394" width="172" height="58" rx="12" fill="#E9E9F2" stroke="#4B4F86" stroke-width="1.2"/>
+        <text x="250" y="419" class="ntext">Calendar</text><text x="250" y="436" class="nsub">buffers · conflicts</text>
+        <rect x="424" y="394" width="172" height="58" rx="12" fill="#E2F0F0" stroke="#0F7682" stroke-width="1.2"/>
+        <text x="442" y="419" class="ntext">Approval policy</text><text x="442" y="436" class="nsub">threshold checks</text>
+        <rect x="616" y="394" width="172" height="58" rx="12" fill="#F6E6E1" stroke="#B24A38" stroke-width="1.2"/>
+        <text x="634" y="419" class="ntext">Risk</text><text x="634" y="436" class="nsub">plan deviation</text>
+        <rect x="808" y="394" width="152" height="58" rx="12" fill="#E4EEE6" stroke="#4E7C5C" stroke-width="1.2"/>
+        <text x="826" y="419" class="ntext">Minutes</text><text x="826" y="436" class="nsub">→ actions</text>
+      </g>
+
+      <!-- converge to the gate -->
+      <path class="flow" d="M126 452 C126 478 495 470 495 496" marker-end="url(#arr)"/>
+      <path class="flow" d="M318 452 C318 476 495 472 495 496" marker-end="url(#arr)"/>
+      <path class="flow" d="M510 452 V496" marker-end="url(#arr)"/>
+      <path class="flow" d="M702 452 C702 476 505 472 505 496" marker-end="url(#arr)"/>
+      <path class="flow" d="M884 452 C884 478 505 470 505 496" marker-end="url(#arr)"/>
+
+      <!-- ===== BAND 5: HUMAN GATE ===== -->
+      <rect x="250" y="500" width="500" height="62" rx="16" fill="#1B1C1F"/>
+      <g transform="translate(280,521)"><path d="M11 0l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V3z" fill="none" stroke="#3FB6C2" stroke-width="1.6"/><path d="M8 11l2 2 4-4" fill="none" stroke="#3FB6C2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></g>
+      <text x="316" y="528" class="ntext" style="fill:#FFFFFF">Human-in-control gate</text>
+      <text x="316" y="545" class="nsub" style="fill:#9DA2AC">review · edit · override · defer · confirm — required for off-policy &amp; external actions</text>
+
+      <!-- gate splits: write-back (left) + delivery (right) -->
+      <path class="flow" stroke="#0F7682" d="M360 562 C360 596 230 600 230 632" marker-end="url(#arrTeal)"/>
+      <path class="flow" stroke="#0F7682" d="M640 562 C640 596 770 600 770 632" marker-end="url(#arrTeal)"/>
+
+      <!-- ===== BAND 6: ACTIONS + DELIVERY ===== -->
+      <rect x="40" y="636" width="390" height="64" rx="14" fill="#FFFFFF" stroke="#0F7682" stroke-width="1.3"/>
+      <text x="62" y="660" class="ntext" style="fill:#0A5A64">Write-back to systems</text>
+      <text x="62" y="678" class="nsub">accept / reschedule event · send drafted reply</text>
+      <text x="62" y="692" class="nsub">approve in ERP · create &amp; assign tasks</text>
+
+      <rect x="570" y="636" width="390" height="64" rx="14" fill="#FFFFFF" stroke="#A8782A" stroke-width="1.3"/>
+      <text x="592" y="660" class="ntext" style="fill:#8a6322">Delivery channels</text>
+      <text x="592" y="678" class="nsub">mobile app · WhatsApp · voice</text>
+      <text x="592" y="692" class="nsub">push notifications · escalations &amp; retries</text>
+
+      <!-- approved actions loop back up to source systems through the same connectors (left return rail) -->
+      <path class="flow" stroke="#0F7682" stroke-dasharray="4 5" d="M40 668 C18 668 16 658 16 638 L16 86 C16 76 25 72 38 72" marker-end="url(#arrTeal)" opacity="0.65"/>
+      <text x="22" y="380" class="nsub" style="fill:#0F7682" transform="rotate(-90 22 380)">approved actions written back</text>
+
+      <!-- audit log: captures the gate decision (every action · confidence · before/after) -->
+      <rect x="770" y="500" width="190" height="62" rx="14" fill="#F6E6E1" stroke="#B24A38" stroke-width="1.3"/>
+      <text x="790" y="528" class="ntext" style="fill:#8a3a2b">Audit log</text>
+      <text x="790" y="545" class="nsub" style="fill:#8a3a2b">action · confidence</text>
+      <text x="790" y="557" class="nsub" style="fill:#8a3a2b">before / after value</text>
+      <path class="flow" stroke="#B24A38" d="M750 531 H770" marker-end="url(#arrClay)"/>
+    </svg>
+
+    <div class="legend">
+      <div class="li"><span class="sw" style="background:#0F7682"></span>Read &amp; write to systems</div>
+      <div class="li"><span class="sw" style="background:#4B4F86"></span>Context &amp; reasoning</div>
+      <div class="li"><span class="sw" style="background:#1B1C1F"></span>Human gate</div>
+      <div class="li"><span class="sw" style="background:#A8782A"></span>Delivery</div>
+      <div class="li"><span class="sw" style="background:#B24A38"></span>Audit trail</div>
+      <div class="li"><svg width="20" height="8"><line x1="0" y1="4" x2="20" y2="4" stroke="#0F7682" stroke-width="1.6" class="flowdash"/></svg>Live data flow</div>
+    </div>
+  </div>
+
+  <!-- INTEGRATION MATRIX -->
+  <div class="matrix reveal">
+    <div class="row head"><div class="cell">Integration</div><div class="cell">Key data &amp; actions</div><div class="cell">Direction</div><div class="cell">Phase</div></div>
+    <div class="row"><div class="cell sys">Calendar</div><div class="cell">Events, attendees, availability, accept / decline / reschedule, travel &amp; gym blocks</div><div class="cell"><span class="pill rw">Read/Write</span></div><div class="cell"><span class="pill mvp">MVP</span></div></div>
+    <div class="row"><div class="cell sys">Email</div><div class="cell">Metadata, body, sender, attachments, drafts, labels — sending requires approval</div><div class="cell"><span class="pill rw">R/W · approve</span></div><div class="cell"><span class="pill mvp">MVP</span></div></div>
+    <div class="row"><div class="cell sys">monday.com</div><div class="cell">Boards, items, owners, due dates, statuses, comments, meeting-action creation</div><div class="cell"><span class="pill rw">Read/Write</span></div><div class="cell"><span class="pill mvp">MVP</span></div></div>
+    <div class="row"><div class="cell sys">Odoo / ERP</div><div class="cell">Approval records, amounts, requester, documents, status, policy validation</div><div class="cell"><span class="pill rw">Read/Write</span></div><div class="cell"><span class="pill mvp">MVP</span></div></div>
+    <div class="row"><div class="cell sys">WhatsApp / Messaging</div><div class="cell">Briefings, team check-ins, reminders, quick replies, alerts</div><div class="cell"><span class="pill rw">Read/Write</span></div><div class="cell"><span class="pill mvp">MVP</span></div></div>
+    <div class="row"><div class="cell sys">Voice / Telephony</div><div class="cell">Audio, transcripts, verbal approvals, check-in calls, confidence scoring</div><div class="cell"><span class="pill rw">Read/Write</span></div><div class="cell"><span class="pill p2">MVP→P2</span></div></div>
+    <div class="row"><div class="cell sys">Notification service</div><div class="cell">Push payloads, priority, delivery status, escalations &amp; retries</div><div class="cell"><span class="pill w">Write</span></div><div class="cell"><span class="pill mvp">MVP</span></div></div>
+    <div class="row"><div class="cell sys">Travel advisory</div><div class="cell">Country alerts, visa updates, travel disruptions for risk monitoring</div><div class="cell"><span class="pill r">Read</span></div><div class="cell"><span class="pill p2">Phase 2</span></div></div>
+  </div>
+</div></section>
+
+<!-- CLOSING -->
+<section style="padding-top:20px;"><div class="wrap">
+  <div class="closing reveal">
+    <div class="eyebrow">See it in motion</div>
+    <h2>The page explains it. The demo proves it.</h2>
+    <p>Step into Emma Rodriguez's 8:17 AM cockpit — switch between Cockpit and Brief, then tap into Approvals, Meeting Minutes, Team Risk, Calendar and Travel. Every flow shown above is interactive.</p>
+    <div class="heroactions">
+      <a class="btn primary" href="AI-Chief-of-Staff-Prototype.html">Open the interactive demo
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M8 7h9v9"/></svg></a>
+      <a class="btn ghost" href="#why">Back to the top</a>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span class="mono">AI EXECUTIVE ASSISTANT</span> · Product brief grounded in BRD v1.0 · Human-in-control by design
+</div></footer>
+
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(Math.min(i%4,3)*60)+'ms';io.observe(el);});
+</script>
+</body>
+</html>
