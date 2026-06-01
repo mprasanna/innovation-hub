@@ -1942,15 +1942,36 @@ function App() {
 }
 
 function Stage() {
+  const pill = { display:'inline-flex', alignItems:'center', gap:9, textDecoration:'none', fontSize:13,
+    color:'var(--ink-2)', padding:'8px 13px 8px 11px', border:'1px solid var(--hairline)',
+    background:'var(--surface)', borderRadius:99 };
+  const pillCur = { ...pill, background:'var(--ink)', color:'#fff', borderColor:'var(--ink)' };
+  const num = { fontFamily:'var(--mono)', fontSize:10.5, fontWeight:600, width:19, height:19, borderRadius:99,
+    display:'grid', placeItems:'center', background:'var(--surface-3)', color:'var(--ink-2)' };
+  const numCur = { ...num, background:'rgba(255,255,255,0.16)', color:'#fff' };
+  const sub = { color:'var(--ink-3)', fontSize:11 };
+  const sep = { width:18, height:1, background:'var(--hairline)', margin:'0 3px' };
   return (
     <div style={{ minHeight:'100vh', background:'#E7E4DD', display:'flex', flexDirection:'column', alignItems:'center', padding:'40px 20px 60px', boxSizing:'border-box' }}>
-      <div style={{ textAlign:'center', marginBottom:26, maxWidth:520 }}>
+      <div style={{ textAlign:'center', marginBottom:22, maxWidth:520 }}>
         <div style={{ fontFamily:'var(--mono)', fontSize:11, fontWeight:600, letterSpacing:2, textTransform:'uppercase', color:'var(--ink-3)', marginBottom:10 }}>AI Chief of Staff · Interactive Prototype</div>
         <div style={{ fontFamily:'var(--serif)', fontSize:34, lineHeight:1, letterSpacing:-0.5, color:'var(--ink)', marginBottom:12 }}>Mission Control</div>
         <div style={{ fontSize:14.5, color:'var(--ink-2)', lineHeight:1.5 }}>
           Live cockpit for Emma Rodriguez, COO. Switch <b style={{ color:'var(--ink)' }}>Cockpit ⁄ Brief</b>, then tap into Approvals, Meeting Minutes, Team Risk, Calendar, and Travel — every flow is interactive.
         </div>
       </div>
+
+      {/* shared breadcrumb stepper across the three pages */}
+      <nav style={{ display:'flex', alignItems:'center', flexWrap:'wrap', justifyContent:'center', marginBottom:30 }} aria-label="Where this sits in the deck">
+        <a href="AI-Chief-of-Staff-Why-How-Tech.html" style={pill}><span style={num}>1</span> Brief <span style={sub}>why &amp; how</span></a>
+        <span style={sep}></span>
+        <a href="AI-Chief-of-Staff-Build-Plan.html" style={pill}><span style={num}>2</span> Build plan <span style={sub}>team / scale</span></a>
+        <span style={sep}></span>
+        <a href="AI-Chief-of-Staff-Lean-Build.html" style={pill}><span style={num}>3</span> Lean V1 <span style={sub}>solo build</span></a>
+        <span style={sep}></span>
+        <span style={pillCur}><span style={numCur}>4</span> Demo <span style={{ ...sub, color:'rgba(255,255,255,.6)' }}>you are here</span></span>
+      </nav>
+
       <IOSDevice dark><App /></IOSDevice>
     </div>
   );
